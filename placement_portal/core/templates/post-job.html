@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post New Job - PlacementCell</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background: #1a1a1a;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 fixed">
+            <div class="p-4">
+                <h2 class="text-2xl font-bold text-white">PlacementCell</h2>
+                <div class="mt-8">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-full">
+                        <div>
+                            <p class="font-semibold">Sarah Johnson</p>
+                            <p class="text-sm text-gray-400">Microsoft HR</p>
+                        </div>
+                    </div>
+                    <nav class="mt-8">
+                        <a href="recruiter-dashboard.html" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 text-white bg-indigo-600 p-3 rounded-lg mb-2">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Job Postings</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-users"></i>
+                            <span>Applications</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-robot"></i>
+                            <span>AI Shortlisting</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Schedule Interviews</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Analytics</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="ml-64 flex-1 p-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold">Post New Job</h1>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+                        Preview Post
+                    </button>
+                </div>
+            </div>
+
+            <!-- Job Posting Form -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <form class="space-y-6">
+                    <!-- Basic Information -->
+                    <div class="space-y-4">
+                        <h2 class="text-lg font-semibold text-gray-900">Basic Information</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="jobTitle" class="block text-sm font-medium text-gray-700">Job Title</label>
+                                <div class="mt-1 relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-briefcase text-gray-400"></i>
+                                    </div>
+                                    <input type="text" id="jobTitle" name="jobTitle" required
+                                        class="appearance-none rounded-lg relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                        placeholder="e.g., Senior Software Engineer">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="jobType" class="block text-sm font-medium text-gray-700">Job Type</label>
+                                <div class="mt-1 relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-clock text-gray-400"></i>
+                                    </div>
+                                    <select id="jobType" name="jobType" required
+                                        class="appearance-none rounded-lg relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
+                                        <option value="">Select job type</option>
+                                        <option value="full-time">Full Time</option>
+                                        <option value="part-time">Part Time</option>
+                                        <option value="internship">Internship</option>
+                                        <option value="contract">Contract</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Job Details -->
+                    <div class="space-y-4">
+                        <h2 class="text-lg font-semibold text-gray-900">Job Details</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="department" class="block text-sm font-medium text-gray-700">Department</label>
+                                <div class="mt-1 relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-graduation-cap text-gray-400"></i>
+                                    </div>
+                                    <select id="department" name="department" required
+                                        class="appearance-none rounded-lg relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
+                                        <option value="">Select department</option>
+                                        <option value="cs">Computer Science</option>
+                                        <option value="it">Information Technology</option>
+                                        <option value="ece">Electronics & Communication</option>
+                                        <option value="me">Mechanical Engineering</option>
+                                        <option value="ce">Civil Engineering</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="experience" class="block text-sm font-medium text-gray-700">Experience Required</label>
+                                <div class="mt-1 relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-briefcase text-gray-400"></i>
+                                    </div>
+                                    <select id="experience" name="experience" required
+                                        class="appearance-none rounded-lg relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
+                                        <option value="">Select experience</option>
+                                        <option value="0-1">0-1 years</option>
+                                        <option value="1-3">1-3 years</option>
+                                        <option value="3-5">3-5 years</option>
+                                        <option value="5+">5+ years</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Job Description -->
+                    <div class="space-y-4">
+                        <h2 class="text-lg font-semibold text-gray-900">Job Description</h2>
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                            <div class="mt-1">
+                                <textarea id="description" name="description" rows="4" required
+                                    class="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                    placeholder="Enter detailed job description..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Requirements -->
+                    <div class="space-y-4">
+                        <h2 class="text-lg font-semibold text-gray-900">Requirements</h2>
+                        <div>
+                            <label for="requirements" class="block text-sm font-medium text-gray-700">Required Skills</label>
+                            <div class="mt-1">
+                                <textarea id="requirements" name="requirements" rows="4" required
+                                    class="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                    placeholder="Enter required skills and qualifications..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <div class="space-y-4">
+                        <h2 class="text-lg font-semibold text-gray-900">Additional Information</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="salary" class="block text-sm font-medium text-gray-700">Salary Range</label>
+                                <div class="mt-1 relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-money-bill-wave text-gray-400"></i>
+                                    </div>
+                                    <input type="text" id="salary" name="salary" required
+                                        class="appearance-none rounded-lg relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                        placeholder="e.g., $50,000 - $80,000">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="deadline" class="block text-sm font-medium text-gray-700">Application Deadline</label>
+                                <div class="mt-1 relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-calendar text-gray-400"></i>
+                                    </div>
+                                    <input type="date" id="deadline" name="deadline" required
+                                        class="appearance-none rounded-lg relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="flex justify-end space-x-4">
+                        <button type="button" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                            Save as Draft
+                        </button>
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                            Post Job
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

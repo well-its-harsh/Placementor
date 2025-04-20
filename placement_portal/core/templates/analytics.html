@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - PlacementCell</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background: #1a1a1a;
+            color: white;
+        }
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar (same as dashboard) -->
+        <div class="sidebar w-64 fixed">
+            <div class="p-4">
+                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlacementCell</h2></a>
+                <div class="mt-8">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-full">
+                        <div>
+                            <p class="font-semibold">Sarah Johnson</p>
+                            <p class="text-sm text-gray-400">Microsoft HR</p>
+                        </div>
+                    </div>
+                    <nav class="mt-8">
+                        <a href="{% url 'recruiter_dashboard' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="{% url 'job_postings' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Job Postings</span>
+                        </a>
+                        <a href="{% url 'applications' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-users"></i>
+                            <span>Applications</span>
+                        </a>
+                        <a href="{% url 'ai_shortlisting' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-robot"></i>
+                            <span>AI Shortlisting</span>
+                        </a>
+                        <a href="{% url 'schedule_interviews' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Schedule Interviews</span>
+                        </a>
+                        <a href="{% url 'analytics' %}" class="flex items-center space-x-3 text-white bg-indigo-600 p-3 rounded-lg mb-2">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Analytics</span>
+                        </a>
+                        <a href="{% url 'Rsettings' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="ml-64 flex-1 p-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold">Analytics Dashboard</h1>
+                <div class="flex items-center space-x-4">
+                    <select class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option>Last 30 Days</option>
+                        <option>Last 3 Months</option>
+                        <option>Last 6 Months</option>
+                        <option>Last Year</option>
+                    </select>
+                    <button class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition duration-300 flex items-center space-x-2">
+                        <i class="fas fa-download"></i>
+                        <span>Export Report</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <!-- Stat Card 1 -->
+                <div class="bg-white p-6 rounded-lg shadow-md stat-card animate-fade-in">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <i class="fas fa-users text-blue-600 text-xl"></i>
+                        </div>
+                        <span class="text-sm text-green-500">+12.5%</span>
+                    </div>
+                    <h3 class="text-2xl font-bold">1,234</h3>
+                    <p class="text-gray-500">Total Applications</p>
+                </div>
+
+                <!-- Stat Card 2 -->
+                <div class="bg-white p-6 rounded-lg shadow-md stat-card animate-fade-in">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                        </div>
+                        <span class="text-sm text-green-500">+8.3%</span>
+                    </div>
+                    <h3 class="text-2xl font-bold">456</h3>
+                    <p class="text-gray-500">Successful Hires</p>
+                </div>
+
+                <!-- Stat Card 3 -->
+                <div class="bg-white p-6 rounded-lg shadow-md stat-card animate-fade-in">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-purple-100 p-3 rounded-full">
+                            <i class="fas fa-clock text-purple-600 text-xl"></i>
+                        </div>
+                        <span class="text-sm text-red-500">-2.4%</span>
+                    </div>
+                    <h3 class="text-2xl font-bold">18</h3>
+                    <p class="text-gray-500">Avg. Hiring Days</p>
+                </div>
+
+                <!-- Stat Card 4 -->
+                <div class="bg-white p-6 rounded-lg shadow-md stat-card animate-fade-in">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-yellow-100 p-3 rounded-full">
+                            <i class="fas fa-star text-yellow-600 text-xl"></i>
+                        </div>
+                        <span class="text-sm text-green-500">+5.7%</span>
+                    </div>
+                    <h3 class="text-2xl font-bold">92%</h3>
+                    <p class="text-gray-500">Candidate Quality</p>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <!-- Applications Trend -->
+                <div class="bg-white p-6 rounded-lg shadow-md animate-fade-in">
+                    <h2 class="text-xl font-semibold mb-4">Applications Trend</h2>
+                    <canvas id="applicationsChart" height="300"></canvas>
+                </div>
+
+                <!-- Hiring Pipeline -->
+                <div class="bg-white p-6 rounded-lg shadow-md animate-fade-in">
+                    <h2 class="text-xl font-semibold mb-4">Hiring Pipeline</h2>
+                    <canvas id="pipelineChart" height="300"></canvas>
+                </div>
+            </div>
+
+            <!-- Detailed Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Top Performing Jobs -->
+                <div class="bg-white p-6 rounded-lg shadow-md animate-fade-in">
+                    <h2 class="text-xl font-semibold mb-4">Top Performing Jobs</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-medium">Software Engineer</h3>
+                                <p class="text-sm text-gray-500">45 applications</p>
+                            </div>
+                            <div class="w-32">
+                                <div class="h-2 bg-gray-200 rounded-full">
+                                    <div class="h-2 bg-indigo-600 rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-medium">UX Designer</h3>
+                                <p class="text-sm text-gray-500">38 applications</p>
+                            </div>
+                            <div class="w-32">
+                                <div class="h-2 bg-gray-200 rounded-full">
+                                    <div class="h-2 bg-indigo-600 rounded-full" style="width: 75%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-medium">Product Manager</h3>
+                                <p class="text-sm text-gray-500">32 applications</p>
+                            </div>
+                            <div class="w-32">
+                                <div class="h-2 bg-gray-200 rounded-full">
+                                    <div class="h-2 bg-indigo-600 rounded-full" style="width: 65%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Source Analysis -->
+                <div class="bg-white p-6 rounded-lg shadow-md animate-fade-in">
+                    <h2 class="text-xl font-semibold mb-4">Source Analysis</h2>
+                    <canvas id="sourceChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Applications Trend Chart
+        const applicationsCtx = document.getElementById('applicationsChart').getContext('2d');
+        new Chart(applicationsCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Applications',
+                    data: [65, 78, 90, 85, 95, 110],
+                    borderColor: '#4F46E5',
+                    tension: 0.3,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Hiring Pipeline Chart
+        const pipelineCtx = document.getElementById('pipelineChart').getContext('2d');
+        new Chart(pipelineCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Applied', 'Screening', 'Interview', 'Offer', 'Hired'],
+                datasets: [{
+                    data: [100, 75, 50, 25, 20],
+                    backgroundColor: '#4F46E5'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Source Analysis Chart
+        const sourceCtx = document.getElementById('sourceChart').getContext('2d');
+        new Chart(sourceCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['LinkedIn', 'Company Website', 'Job Boards', 'Referrals', 'Others'],
+                datasets: [{
+                    data: [35, 25, 20, 15, 5],
+                    backgroundColor: [
+                        '#4F46E5',
+                        '#818CF8',
+                        '#A5B4FC',
+                        '#C7D2FE',
+                        '#E0E7FF'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Add hover effects for stat cards
+        document.querySelectorAll('.stat-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-5px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+Django>=5.2,<6.0
+django-environ>=0.11.2
+# Optional: Pillow for image fields, psycopg2 for Postgres, mysqlclient for MySQL
+# Pillow>=10.0.0
+# psycopg2>=2.9.9
+# mysqlclient>=2.2.4

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATS Score - PlacementCell</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background: #1a1a1a;
+            color: white;
+        }
+        .score-ring {
+            transition: stroke-dashoffset 0.8s ease-in-out;
+        }
+        .skill-bar {
+            transition: width 1s ease-in-out;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .animate-slide-in {
+            animation: slideIn 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 fixed">
+            <div class="p-4">
+                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlacementCell</h2></a>
+                <div class="mt-8">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-full">
+                        <div>
+                            <p class="font-semibold">{{ user.full_name|default:user.email|default:"User" }}</p>
+                            <p class="text-sm text-gray-400">{{ department|default:"Department" }}</p>
+                        </div>
+                    </div>
+                    <nav class="mt-8">
+                        <a href="{% url 'student_dashboard' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="{% url 'job_openings' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Job Openings</span>
+                        </a>
+                        <a href="{% url 'my_applications' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-file-alt"></i>
+                            <span>My Applications</span>
+                        </a>
+                        <a href="{% url 'ats_score' %}" class="flex items-center space-x-3 text-white bg-indigo-600 p-3 rounded-lg mb-2">
+                            <i class="fas fa-robot"></i>
+                            <span>ATS Score</span>
+                        </a>
+                        <a href="{% url 'interviews' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Interviews</span>
+                        </a>
+                        <a href="{% url 'notifications' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-bell"></i>
+                            <span>Notifications</span>
+                        </a>
+                        <a href="{% url 'Ssettings' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="ml-64 flex-1 p-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold">ATS Score Analysis</h1>
+                <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+                    <i class="fas fa-upload mr-2"></i>Upload New Resume
+                </button>
+            </div>
+
+            <!-- Score Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Overall Score -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold">Overall Score</h3>
+                        <i class="fas fa-info-circle text-gray-400 hover:text-indigo-600 cursor-pointer"></i>
+                    </div>
+                    <div class="flex items-center justify-center">
+                        <div class="relative">
+                            <svg class="w-32 h-32" viewBox="0 0 36 36">
+                                <path d="M18 2.0845
+                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    fill="none"
+                                    stroke="#E2E8F0"
+                                    stroke-width="3"
+                                />
+                                <path d="M18 2.0845
+                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    fill="none"
+                                    stroke="#4F46E5"
+                                    stroke-width="3"
+                                    stroke-dasharray="85, 100"
+                                    class="score-ring"
+                                />
+                                <text x="18" y="20.35" class="text-3xl font-bold" text-anchor="middle" fill="#1F2937">85%</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Keywords Match -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold mb-4">Keywords Match</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm text-gray-600">Technical Skills</span>
+                                <span class="text-sm font-semibold">90%</span>
+                            </div>
+                            <div class="h-2 bg-gray-200 rounded">
+                                <div class="h-2 bg-green-500 rounded skill-bar" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm text-gray-600">Soft Skills</span>
+                                <span class="text-sm font-semibold">75%</span>
+                            </div>
+                            <div class="h-2 bg-gray-200 rounded">
+                                <div class="h-2 bg-blue-500 rounded skill-bar" style="width: 75%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Format Compliance -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold mb-4">Format Compliance</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">File Format</span>
+                            <i class="fas fa-check-circle text-green-500"></i>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">Length</span>
+                            <i class="fas fa-check-circle text-green-500"></i>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">Sections</span>
+                            <i class="fas fa-exclamation-circle text-yellow-500"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Analysis -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Improvement Suggestions -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold mb-4">Improvement Suggestions</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3 animate-slide-in" style="animation-delay: 0.1s">
+                            <i class="fas fa-lightbulb text-yellow-500 mt-1"></i>
+                            <div>
+                                <p class="text-sm font-medium">Add quantifiable achievements</p>
+                                <p class="text-xs text-gray-500">Include specific metrics and results from your experiences</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3 animate-slide-in" style="animation-delay: 0.2s">
+                            <i class="fas fa-lightbulb text-yellow-500 mt-1"></i>
+                            <div>
+                                <p class="text-sm font-medium">Enhance technical skills section</p>
+                                <p class="text-xs text-gray-500">Add more relevant programming languages and tools</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3 animate-slide-in" style="animation-delay: 0.3s">
+                            <i class="fas fa-lightbulb text-yellow-500 mt-1"></i>
+                            <div>
+                                <p class="text-sm font-medium">Improve formatting consistency</p>
+                                <p class="text-xs text-gray-500">Maintain consistent font sizes and spacing throughout</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Industry Comparison -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold mb-4">Industry Comparison</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm text-gray-600">Your Score</span>
+                                <span class="text-sm font-semibold">85%</span>
+                            </div>
+                            <div class="h-2 bg-gray-200 rounded">
+                                <div class="h-2 bg-indigo-600 rounded skill-bar" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm text-gray-600">Industry Average</span>
+                                <span class="text-sm font-semibold">70%</span>
+                            </div>
+                            <div class="h-2 bg-gray-200 rounded">
+                                <div class="h-2 bg-gray-400 rounded skill-bar" style="width: 70%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3 bg-green-50 rounded-lg">
+                        <p class="text-sm text-green-700">
+                            <i class="fas fa-chart-line mr-2"></i>
+                            Your resume is performing better than 75% of candidates in your field
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resume History -->
+            <div class="mt-8">
+                <h3 class="text-lg font-semibold mb-4">Resume History</h3>
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <table class="min-w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Version</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Score</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Change</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 text-sm text-gray-900">Version 3.0</td>
+                                <td class="px-6 py-4 text-sm text-gray-500">Apr 20, 2025</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">85%</td>
+                                <td class="px-6 py-4">
+                                    <span class="text-green-600 text-sm">
+                                        <i class="fas fa-arrow-up mr-1"></i>+5%
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="text-indigo-600 hover:text-indigo-900">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 text-sm text-gray-900">Version 2.0</td>
+                                <td class="px-6 py-4 text-sm text-gray-500">Apr 15, 2025</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">80%</td>
+                                <td class="px-6 py-4">
+                                    <span class="text-green-600 text-sm">
+                                        <i class="fas fa-arrow-up mr-1"></i>+10%
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="text-indigo-600 hover:text-indigo-900">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 text-sm text-gray-900">Version 1.0</td>
+                                <td class="px-6 py-4 text-sm text-gray-500">Apr 10, 2025</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">70%</td>
+                                <td class="px-6 py-4">
+                                    <span class="text-gray-500 text-sm">-</span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="text-indigo-600 hover:text-indigo-900">View</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

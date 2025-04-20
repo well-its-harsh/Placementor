@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interviews - PlacementCell</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background: #1a1a1a;
+            color: white;
+        }
+        .interview-card {
+            transition: all 0.3s ease;
+        }
+        .interview-card:hover {
+            transform: translateY(-5px);
+        }
+        .countdown {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 fixed">
+            <div class="p-4">
+                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlacementCell</h2></a>
+                <div class="mt-8">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-full">
+                        <div>
+                            <p class="font-semibold">Rohan Darokar</p>
+                            <p class="text-sm text-gray-400">Computer Science</p>
+                        </div>
+                    </div>
+                    <nav class="mt-8">
+                        <a href="{% url 'student_dashboard' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="{% url 'job_openings' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Job Openings</span>
+                        </a>
+                        <a href="{% url 'my_applications' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-file-alt"></i>
+                            <span>My Applications</span>
+                        </a>
+                        <a href="{% url 'ats_score' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-robot"></i>
+                            <span>ATS Score</span>
+                        </a>
+                        <a href="{% url 'interviews' %}" class="flex items-center space-x-3 text-white bg-indigo-600 p-3 rounded-lg mb-2">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Interviews</span>
+                        </a>
+                        <a href="{% url 'notifications' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-bell"></i>
+                            <span>Notifications</span>
+                        </a>
+                        <a href="{% url 'Ssettings' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="ml-64 flex-1 p-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold">Interviews</h1>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-white px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition">
+                        <i class="fas fa-calendar-plus mr-2 text-indigo-600"></i>
+                        Sync Calendar
+                    </button>
+                    <select class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                        <option>All Interviews</option>
+                        <option>Upcoming</option>
+                        <option>Completed</option>
+                        <option>Cancelled</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Next Interview -->
+            <div class="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white p-6 rounded-lg shadow-lg mb-8">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2">Next Interview</h2>
+                        <div class="flex items-center space-x-4 mb-4">
+                            <img src="https://via.placeholder.com/48" alt="Google" class="rounded">
+                            <div>
+                                <h3 class="font-semibold">Software Engineer - Google</h3>
+                                <p class="text-indigo-200">Technical Round</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-6">
+                            <div class="flex items-center">
+                                <i class="fas fa-clock mr-2"></i>
+                                <span>10:00 AM - 11:30 AM</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-video mr-2"></i>
+                                <span>Google Meet</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="countdown bg-white text-indigo-600 px-4 py-2 rounded-lg font-bold text-xl mb-2">
+                            02:45:30
+                        </div>
+                        <button class="bg-white text-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-50 transition">
+                            Join Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interview Schedule -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Today's Interviews -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-4">Today's Interviews</h2>
+                    <div class="space-y-4">
+                        <div class="interview-card bg-white p-4 rounded-lg shadow-md">
+                            <div class="flex justify-between items-start">
+                                <div class="flex items-start space-x-4">
+                                    <img src="https://via.placeholder.com/40" alt="Google" class="rounded">
+                                    <div>
+                                        <h3 class="font-semibold">Google</h3>
+                                        <p class="text-sm text-gray-600">Technical Round</p>
+                                        <div class="flex items-center mt-2 text-sm text-gray-500">
+                                            <i class="fas fa-clock mr-2"></i>
+                                            <span>10:00 AM</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                                    Prepare
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="interview-card bg-white p-4 rounded-lg shadow-md">
+                            <div class="flex justify-between items-start">
+                                <div class="flex items-start space-x-4">
+                                    <img src="https://via.placeholder.com/40" alt="Microsoft" class="rounded">
+                                    <div>
+                                        <h3 class="font-semibold">Microsoft</h3>
+                                        <p class="text-sm text-gray-600">HR Round</p>
+                                        <div class="flex items-center mt-2 text-sm text-gray-500">
+                                            <i class="fas fa-clock mr-2"></i>
+                                            <span>2:00 PM</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                                    Prepare
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Interviews -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-4">Upcoming Interviews</h2>
+                    <div class="space-y-4">
+                        <div class="interview-card bg-white p-4 rounded-lg shadow-md">
+                            <div class="flex justify-between items-start">
+                                <div class="flex items-start space-x-4">
+                                    <img src="https://via.placeholder.com/40" alt="Amazon" class="rounded">
+                                    <div>
+                                        <h3 class="font-semibold">Amazon</h3>
+                                        <p class="text-sm text-gray-600">System Design Round</p>
+                                        <div class="flex items-center mt-2 text-sm text-gray-500">
+                                            <i class="fas fa-calendar mr-2"></i>
+                                            <span>Tomorrow, 11:00 AM</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                                    Prepare
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="interview-card bg-white p-4 rounded-lg shadow-md">
+                            <div class="flex justify-between items-start">
+                                <div class="flex items-start space-x-4">
+                                    <img src="https://via.placeholder.com/40" alt="Meta" class="rounded">
+                                    <div>
+                                        <h3 class="font-semibold">Meta</h3>
+                                        <p class="text-sm text-gray-600">Coding Round</p>
+                                        <div class="flex items-center mt-2 text-sm text-gray-500">
+                                            <i class="fas fa-calendar mr-2"></i>
+                                            <span>Apr 22, 3:00 PM</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                                    Prepare
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interview History -->
+            <div class="mt-8">
+                <h2 class="text-lg font-semibold mb-4">Interview History</h2>
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <table class="min-w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Company</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Position</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <img src="https://via.placeholder.com/32" alt="Netflix" class="rounded mr-2">
+                                        <span class="text-sm font-medium">Netflix</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-500">Senior Developer</td>
+                                <td class="px-6 py-4 text-sm text-gray-500">Technical</td>
+                                <td class="px-6 py-4 text-sm text-gray-500">Apr 15, 2025</td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                        Completed
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="text-indigo-600 hover:text-indigo-900">View Feedback</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <img src="https://via.placeholder.com/32" alt="Adobe" class="rounded mr-2">
+                                        <span class="text-sm font-medium">Adobe</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-500">Full Stack Developer</td>
+                                <td class="px-6 py-4 text-sm text-gray-500">HR</td>
+                                <td class="px-6 py-4 text-sm text-gray-500">Apr 12, 2025</td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                        Pending
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="text-indigo-600 hover:text-indigo-900">View Details</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruiter Settings - PlacementCell</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background: #1a1a1a;
+            color: white;
+        }
+        .settings-card {
+            transition: all 0.3s ease;
+        }
+        .settings-card:hover {
+            transform: translateX(5px);
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 fixed">
+            <div class="p-4">
+                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlacementCell</h2></a>
+                <div class="mt-8">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-full">
+                        <div>
+                            <p class="font-semibold">Sarah Johnson</p>
+                            <p class="text-sm text-gray-400">Microsoft HR</p>
+                        </div>
+                    </div>
+                    <nav class="mt-8">
+                        <a href="{% url 'recruiter_dashboard' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="{% url 'job_postings' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Job Postings</span>
+                        </a>
+                        <a href="{% url 'applications' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-users"></i>
+                            <span>Applications</span>
+                        </a>
+                        <a href="{% url 'ai_shortlisting' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-robot"></i>
+                            <span>AI Shortlisting</span>
+                        </a>
+                        <a href="{% url 'schedule_interviews' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Schedule Interviews</span>
+                        </a>
+                        <a href="{% url 'analytics' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Analytics</span>
+                        </a>
+                        <a href="{% url 'Rsettings' %}" class="flex items-center space-x-3 text-white bg-indigo-600 p-3 rounded-lg mb-2">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="ml-64 flex-1 p-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold">Recruiter Settings</h1>
+                <button class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition duration-300 flex items-center space-x-2">
+                    <i class="fas fa-save"></i>
+                    <span>Save Changes</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Profile Settings -->
+                <div class="col-span-2">
+                    <div class="bg-white p-6 rounded-lg shadow-md mb-8 animate-fade-in">
+                        <h2 class="text-xl font-semibold mb-6">Profile Settings</h2>
+                        <div class="flex items-center space-x-6 mb-6">
+                            <img src="https://via.placeholder.com/100" alt="Profile" class="rounded-full">
+                            <div>
+                                <button class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-300">
+                                    Change Photo
+                                </button>
+                                <p class="text-sm text-gray-500 mt-2">Recommended: 200x200px or larger</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                                <input type="text" value="Sarah" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                                <input type="text" value="Johnson" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <input type="email" value="sarah.johnson@microsoft.com" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                                <input type="tel" value="+1 234 567 8900" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Company Settings -->
+                    <div class="bg-white p-6 rounded-lg shadow-md mb-8 animate-fade-in">
+                        <h2 class="text-xl font-semibold mb-6">Company Settings</h2>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
+                                <input type="text" value="Microsoft" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Department</label>
+                                <input type="text" value="Human Resources" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Company Website</label>
+                                <input type="url" value="https://microsoft.com" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preferences and Security -->
+                <div class="col-span-1 space-y-8">
+                    <!-- Notification Settings -->
+                    <div class="bg-white p-6 rounded-lg shadow-md animate-fade-in">
+                        <h2 class="text-xl font-semibold mb-6">Notification Settings</h2>
+                        <div class="space-y-4">
+                            <label class="flex items-center space-x-3">
+                                <input type="checkbox" class="form-checkbox text-indigo-600 h-5 w-5" checked>
+                                <span>Email Notifications</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="checkbox" class="form-checkbox text-indigo-600 h-5 w-5" checked>
+                                <span>SMS Notifications</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="checkbox" class="form-checkbox text-indigo-600 h-5 w-5" checked>
+                                <span>Browser Notifications</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="checkbox" class="form-checkbox text-indigo-600 h-5 w-5">
+                                <span>Weekly Reports</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Security Settings -->
+                    <div class="bg-white p-6 rounded-lg shadow-md animate-fade-in">
+                        <h2 class="text-xl font-semibold mb-6">Security Settings</h2>
+                        <div class="space-y-4">
+                            <button class="w-full text-left px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-md transition duration-300 flex items-center justify-between">
+                                <span>Change Password</span>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </button>
+                            <button class="w-full text-left px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-md transition duration-300 flex items-center justify-between">
+                                <span>Two-Factor Authentication</span>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </button>
+                            <button class="w-full text-left px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-md transition duration-300 flex items-center justify-between">
+                                <span>Login History</span>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Danger Zone -->
+                    <div class="bg-white p-6 rounded-lg shadow-md animate-fade-in">
+                        <h2 class="text-xl font-semibold mb-6 text-red-600">Danger Zone</h2>
+                        <div class="space-y-4">
+                            <button class="w-full px-4 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-50 transition duration-300">
+                                Delete Account
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add hover effects for settings cards
+        document.querySelectorAll('.settings-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateX(5px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateX(0)';
+            });
+        });
+    </script>
+</body>
+</html>

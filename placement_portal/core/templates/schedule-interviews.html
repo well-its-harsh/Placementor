@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Interviews - PlacementCell</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background: #1a1a1a;
+            color: white;
+        }
+        .calendar-day {
+            transition: all 0.3s ease;
+        }
+        .calendar-day:hover:not(.inactive) {
+            background-color: #EEF2FF;
+            transform: scale(1.05);
+        }
+        .interview-card {
+            transition: all 0.3s ease;
+        }
+        .interview-card:hover {
+            transform: translateY(-2px);
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar (same as dashboard) -->
+        <div class="sidebar w-64 fixed">
+            <div class="p-4">
+                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlacementCell</h2></a>
+                <div class="mt-8">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-full">
+                        <div>
+                            <p class="font-semibold">Sarah Johnson</p>
+                            <p class="text-sm text-gray-400">Microsoft HR</p>
+                        </div>
+                    </div>
+                    <nav class="mt-8">
+                        <a href="{% url 'recruiter_dashboard' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="{% url 'job_postings' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Job Postings</span>
+                        </a>
+                        <a href="{% url 'applications' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-users"></i>
+                            <span>Applications</span>
+                        </a>
+                        <a href="{% url 'ai_shortlisting' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-robot"></i>
+                            <span>AI Shortlisting</span>
+                        </a>
+                        <a href="{% url 'schedule_interviews' %}" class="flex items-center space-x-3 text-white bg-indigo-600 p-3 rounded-lg mb-2">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Schedule Interviews</span>
+                        </a>
+                        <a href="{% url 'analytics' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Analytics</span>
+                        </a>
+                        <a href="{% url 'Rsettings' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="ml-64 flex-1 p-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold">Schedule Interviews</h1>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition duration-300 flex items-center space-x-2">
+                        <i class="fas fa-plus"></i>
+                        <span>New Interview</span>
+                    </button>
+                    <div class="relative">
+                        <i class="fas fa-bell text-gray-600 text-xl"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">4</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Calendar Section -->
+                <div class="col-span-2">
+                    <div class="bg-white p-6 rounded-lg shadow-md animate-fade-in">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-semibold">April 2025</h2>
+                            <div class="flex space-x-2">
+                                <button class="p-2 hover:bg-gray-100 rounded-full">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <button class="p-2 hover:bg-gray-100 rounded-full">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Calendar Grid -->
+                        <div class="grid grid-cols-7 gap-2">
+                            <!-- Days of Week -->
+                            <div class="text-center text-gray-500 font-medium">Sun</div>
+                            <div class="text-center text-gray-500 font-medium">Mon</div>
+                            <div class="text-center text-gray-500 font-medium">Tue</div>
+                            <div class="text-center text-gray-500 font-medium">Wed</div>
+                            <div class="text-center text-gray-500 font-medium">Thu</div>
+                            <div class="text-center text-gray-500 font-medium">Fri</div>
+                            <div class="text-center text-gray-500 font-medium">Sat</div>
+
+                            <!-- Calendar Days -->
+                            <div class="calendar-day p-2 text-center text-gray-400 inactive">30</div>
+                            <div class="calendar-day p-2 text-center">1</div>
+                            <div class="calendar-day p-2 text-center">2</div>
+                            <div class="calendar-day p-2 text-center">3</div>
+                            <div class="calendar-day p-2 text-center relative">
+                                4
+                                <div class="absolute bottom-1 left-1/2 transform -translate-x-1/2">
+                                    <div class="w-1 h-1 bg-indigo-600 rounded-full"></div>
+                                </div>
+                            </div>
+                            <div class="calendar-day p-2 text-center">5</div>
+                            <div class="calendar-day p-2 text-center">6</div>
+                            <div class="calendar-day p-2 text-center">7</div>
+                            <div class="calendar-day p-2 text-center relative">
+                                8
+                                <div class="absolute bottom-1 left-1/2 transform -translate-x-1/2">
+                                    <div class="w-1 h-1 bg-green-600 rounded-full"></div>
+                                </div>
+                            </div>
+                            <div class="calendar-day p-2 text-center">9</div>
+                            <div class="calendar-day p-2 text-center relative">
+                                10
+                                <div class="absolute bottom-1 left-1/2 transform -translate-x-1/2">
+                                    <div class="w-1 h-1 bg-indigo-600 rounded-full"></div>
+                                </div>
+                            </div>
+                            <div class="calendar-day p-2 text-center">11</div>
+                            <div class="calendar-day p-2 text-center">12</div>
+                            <div class="calendar-day p-2 text-center">13</div>
+                            <!-- Add more days as needed -->
+                        </div>
+
+                        <!-- Time Slots -->
+                        <div class="mt-8">
+                            <h3 class="font-medium mb-4">Available Time Slots - Today</h3>
+                            <div class="grid grid-cols-4 gap-3">
+                                <button class="p-2 border rounded-md text-center hover:bg-indigo-50 hover:border-indigo-500 transition duration-300">
+                                    9:00 AM
+                                </button>
+                                <button class="p-2 border rounded-md text-center hover:bg-indigo-50 hover:border-indigo-500 transition duration-300">
+                                    10:00 AM
+                                </button>
+                                <button class="p-2 border rounded-md text-center hover:bg-indigo-50 hover:border-indigo-500 transition duration-300">
+                                    11:00 AM
+                                </button>
+                                <button class="p-2 border rounded-md text-center hover:bg-indigo-50 hover:border-indigo-500 transition duration-300">
+                                    2:00 PM
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Interviews -->
+                <div class="col-span-1">
+                    <div class="bg-white p-6 rounded-lg shadow-md animate-fade-in">
+                        <h2 class="text-xl font-semibold mb-4">Upcoming Interviews</h2>
+                        <div class="space-y-4">
+                            <!-- Interview Card 1 -->
+                            <div class="interview-card p-4 bg-indigo-50 rounded-lg border border-indigo-100">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="font-medium">John Smith</h3>
+                                        <p class="text-sm text-gray-600">Software Engineer</p>
+                                        <div class="flex items-center mt-2 text-sm text-gray-500">
+                                            <i class="fas fa-clock mr-2"></i>
+                                            <span>10:00 AM - 11:00 AM</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="p-2 hover:bg-indigo-100 rounded-full">
+                                            <i class="fas fa-video text-indigo-600"></i>
+                                        </button>
+                                        <button class="p-2 hover:bg-indigo-100 rounded-full">
+                                            <i class="fas fa-ellipsis-v text-gray-600"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Interview Card 2 -->
+                            <div class="interview-card p-4 bg-green-50 rounded-lg border border-green-100">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="font-medium">Emma Wilson</h3>
+                                        <p class="text-sm text-gray-600">UX Designer</p>
+                                        <div class="flex items-center mt-2 text-sm text-gray-500">
+                                            <i class="fas fa-clock mr-2"></i>
+                                            <span>2:00 PM - 3:00 PM</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="p-2 hover:bg-green-100 rounded-full">
+                                            <i class="fas fa-video text-green-600"></i>
+                                        </button>
+                                        <button class="p-2 hover:bg-green-100 rounded-full">
+                                            <i class="fas fa-ellipsis-v text-gray-600"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="mt-6">
+                            <h3 class="font-medium mb-3">Quick Actions</h3>
+                            <div class="space-y-2">
+                                <button class="w-full p-2 text-left hover:bg-gray-50 rounded-md flex items-center space-x-2">
+                                    <i class="fas fa-video text-indigo-600"></i>
+                                    <span>Start Video Call</span>
+                                </button>
+                                <button class="w-full p-2 text-left hover:bg-gray-50 rounded-md flex items-center space-x-2">
+                                    <i class="fas fa-calendar-alt text-indigo-600"></i>
+                                    <span>Reschedule Interview</span>
+                                </button>
+                                <button class="w-full p-2 text-left hover:bg-gray-50 rounded-md flex items-center space-x-2">
+                                    <i class="fas fa-envelope text-indigo-600"></i>
+                                    <span>Send Reminder</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add hover effects for calendar days
+        document.querySelectorAll('.calendar-day:not(.inactive)').forEach(day => {
+            day.addEventListener('mouseenter', () => {
+                day.style.backgroundColor = '#EEF2FF';
+                day.style.transform = 'scale(1.05)';
+            });
+            day.addEventListener('mouseleave', () => {
+                day.style.backgroundColor = '';
+                day.style.transform = 'scale(1)';
+            });
+        });
+
+        // Add hover effects for interview cards
+        document.querySelectorAll('.interview-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - PlacementCell</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .form-section {
+            display: none;
+        }
+        .form-section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-black min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-black p-8 rounded-xl shadow-lg border border-green-500">
+        <div class="text-center">
+            <h2 class="text-3xl font-bold text-white">Create your account</h2>
+            <p class="mt-2 text-sm text-gray-400">Join PlacementCell to start your journey</p>
+        </div>
+
+        <!-- User Type Selection -->
+        <div class="flex space-x-4 mb-6">
+            <button onclick="showForm('student')" class="flex-1 py-2 px-4 border-2 border-green-500 text-green-500 rounded-lg font-medium hover:bg-green-900 transition-colors">
+                Student
+            </button>
+            <button onclick="showForm('recruiter')" class="flex-1 py-2 px-4 border-2 border-gray-600 text-gray-400 rounded-lg font-medium hover:bg-gray-800 transition-colors">
+                Recruiter
+            </button>
+        </div>
+
+        <!-- Student Signup Form -->
+        <form id="studentForm" class="form-section active mt-8 space-y-6" method="POST" action="{% url 'signup' %}">
+            {% csrf_token %}
+            <div class="rounded-md shadow-sm space-y-4">
+                <div>
+                    <label for="studentName" class="block text-sm font-medium text-gray-300">Full Name</label>
+                    <div class="mt-1 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-gray-400"></i>
+                        </div>
+                        <input id="full_name" name="full_name" type="text" required 
+                            class="appearance-none rounded-lg relative block w-full px-3 py-2 pl-10 border border-gray-600 bg-gray-800 placeholder-gray-400 text-white focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm" 
+                            placeholder="Enter your full name">
+                    </div>
+                </div>
+                <div>
+                    <label for="studentEmail" class="block text-sm font-medium text-gray-300">Email address</label>
+                    <div class="mt-1 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-envelope text-gray-400"></i>
+                        </div>
+                        <input id="email" name="email" type="email" required 
+                            class="appearance-none rounded-lg relative block w-full px-3 py-2 pl-10 border border-gray-600 bg-gray-800 placeholder-gray-400 text-white focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm" 
+                            placeholder="Enter your email">
+                    </div>
+                </div>
+                <div>
+                    <label for="studentPassword" class="block text-sm font-medium text-gray-300">Password</label>
+                    <div class="mt-1 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </div>
+                        <input id="password" name="password" type="password" required 
+                            class="appearance-none rounded-lg relative block w-full px-3 py-2 pl-10 border border-gray-600 bg-gray-800 placeholder-gray-400 text-white focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm" 
+                            placeholder="Create a password">
+                    </div>
+                </div>
+                <div>
+                    <label for="studentDepartment" class="block text-sm font-medium text-gray-300">Department</label>
+                    <div class="mt-1 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-graduation-cap text-gray-400"></i>
+                        </div>
+                        <select id="department" name="department" required 
+                            class="appearance-none rounded-lg relative block w-full px-3 py-2 pl-10 border border-gray-600 bg-gray-800 placeholder-gray-400 text-white focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm">
+                            <option value="">Select your department</option>
+                            <option value="cs">Computer Science</option>
+                            <option value="it">Information Technology</option>
+                            <option value="ece">Electronics & Communication</option>
+                            <option value="me">Mechanical Engineering</option>
+                            <option value="ce">Civil Engineering</option>
+                            <option value="ai">Artificial Intelligence And Datascience</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label for="studentYear" class="block text-sm font-medium text-gray-300">Year of Study</label>
+                    <div class="mt-1 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-calendar text-gray-400"></i>
+                        </div>
+                        <select id="year_of_study" name="year_of_study" required 
+                            class="appearance-none rounded-lg relative block w-full px-3 py-2 pl-10 border border-gray-600 bg-gray-800 placeholder-gray-400 text-white focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm">
+                            <option value="">Select your year</option>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" name='student'
+                    class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <i class="fas fa-user-plus"></i>
+                    </span>
+                    Create Student Account
+                </button>
+            </div>
+        </form>
+
+        <!-- Recruiter Signup Form -->
+        <form id="recruiterForm" class="form-section mt-8 space-y-6" method="POST" action="{% url 'signup' %}">
+            {% csrf_token %}
+            <div class="rounded-md shadow-sm space-y-4">
+                <div>
+                    <label for="recruiterName" class="block text-sm font-medium text-gray-300">Full Name</label>
+                    <div class="mt-1 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-gray-400"></i>
+                        </div>
+                        <input id="full_name" name="full_name" type="text" required 
+                            class="appearance-none rounded-lg relative block w-full px-3 py-2 pl-10 border border-gray-600 bg-gray-800 placeholder-gray-400 text-white focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm" 
+                            placeholder="Enter your full name">
+                    </div>
+                </div>
+                <div>
+                    <label for="recruiterEmail" class="block text-sm font-medium text-gray-300">Email address</label>
+                    <div class="mt-1 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-envelope text-gray-400"></i>
+                        </div>
+                        <input id="email" name="email" type="email" required 
+                            class="appearance-none rounded-lg relative block w-full px-3 py-2 pl-10 border border-gray-600 bg-gray-800 placeholder-gray-400 text-white focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm" 
+                            placeholder="Enter your email">
+                    </div>
+                </div>
+                <div>
+                    <label for="recruiterPassword" class="block text-sm font-medium text-gray-300">Password</label>
+                    <div class="mt-1 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </div>
+                        <input id="password" name="password" type="password" required 
+                            class="appearance-none rounded-lg relative block w-full px-3 py-2 pl-10 border border-gray-600 bg-gray-800 placeholder-gray-400 text-white focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm" 
+                            placeholder="Create a password">
+                    </div>
+                </div>
+                <div>
+                    <label for="companyName" class="block text-sm font-medium text-gray-300">Company Name</label>
+                    <div class="mt-1 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-building text-gray-400"></i>
+                        </div>
+                        <input id="company_name" name="company_name" type="text" required 
+                            class="appearance-none rounded-lg relative block w-full px-3 py-2 pl-10 border border-gray-600 bg-gray-800 placeholder-gray-400 text-white focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm" 
+                            placeholder="Enter company name">
+                    </div>
+                </div>
+                <div>
+                    <label for="designation" class="block text-sm font-medium text-gray-300">Designation</label>
+                    <div class="mt-1 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-briefcase text-gray-400"></i>
+                        </div>
+                        <input id="designation" name="designation" type="text" required 
+                            class="appearance-none rounded-lg relative block w-full px-3 py-2 pl-10 border border-gray-600 bg-gray-800 placeholder-gray-400 text-white focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm" 
+                            placeholder="Enter your designation">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" name='recruiter'
+                    class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <i class="fas fa-user-plus"></i>
+                    </span>
+                    Create Recruiter Account
+                </button>
+            </div>
+        </form>
+
+        <div class="text-center">
+            <p class="text-sm text-gray-400">
+                Already have an account? 
+                <a href="/login/" class="font-medium text-green-500 hover:text-green-400">
+                    Sign in
+                </a>
+            </p>
+        </div>
+    </div>
+    <script>
+         function showForm(formType) {
+            // Hide all forms
+            document.querySelectorAll('.form-section').forEach(form => {
+                form.classList.remove('active');
+            });
+            
+            // Show selected form
+            document.getElementById(formType + 'Form').classList.add('active');
+            
+            // Update button styles
+            document.querySelectorAll('button').forEach(button => {
+                if (button.textContent.toLowerCase().includes(formType)) {
+                    button.classList.add('border-green-500', 'text-green-500');
+                    button.classList.remove('border-gray-600', 'text-gray-400');
+                } else {
+                    button.classList.remove('border-green-500', 'text-green-500');
+                    button.classList.add('border-gray-600', 'text-gray-400');
+                }
+            });
+        }
+    
+        // Set initial state on load
+        document.addEventListener("DOMContentLoaded", () => {
+            showForm('student'); // Or 'recruiter' if you want to default to recruiter
+        });
+    </script>
+    
+
+    
+</body>
+</html> 

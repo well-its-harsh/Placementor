@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Postings - PlacementCell</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .sidebar {
+            min-height: 100vh;
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .job-card:hover {
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar (same as dashboard) -->
+        <div class="sidebar w-64 fixed">
+            <div class="p-4">
+                <a href="{% url 'home' %}" class="block w-fit cursor-pointer">
+                    <h2 class="text-2xl font-bold text-white">PlacementCell</h2>
+                </a>
+                <div class="mt-8">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-full">
+                        <div>
+                            <p class="font-semibold">Sarah Johnson</p>
+                            <p class="text-sm text-gray-400">Microsoft HR</p>
+                        </div>
+                    </div>
+                    <nav class="mt-8">
+                        <a href="{% url 'recruiter_dashboard' %}"
+                            class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="{% url 'job_postings' %}"
+                            class="flex items-center space-x-3 text-white bg-indigo-600 p-3 rounded-lg mb-2">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Job Postings</span>
+                        </a>
+                        <a href="{% url 'applications' %}"
+                            class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-users"></i>
+                            <span>Applications</span>
+                        </a>
+                        <a href="{% url 'ai_shortlisting' %}"
+                            class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-robot"></i>
+                            <span>AI Shortlisting</span>
+                        </a>
+                        <a href="{% url 'schedule_interviews' %}"
+                            class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Schedule Interviews</span>
+                        </a>
+                        <a href="{% url 'analytics' %}"
+                            class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Analytics</span>
+                        </a>
+                        <a href="{% url 'Rsettings' %}"
+                            class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="ml-64 flex-1 p-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold">Job Postings</h1>
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'create_job' %}"
+                        class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition duration-300 flex items-center space-x-2">
+                        <i class="fas fa-plus"></i>
+                        <span>Create New Job</span>
+                    </a>
+                    <div class="relative">
+                        <i class="fas fa-bell text-gray-600 text-xl"></i>
+                        <span
+                            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="bg-white p-4 rounded-lg shadow-md mb-6 animate-fade-in">
+                <div class="flex space-x-4">
+                    <div class="flex-1">
+                        <input type="text" placeholder="Search jobs..."
+                            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <select class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option>All Departments</option>
+                        <option>Engineering</option>
+                        <option>Design</option>
+                        <option>Marketing</option>
+                        <option>Sales</option>
+                    </select>
+                    <select class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option>All Status</option>
+                        <option>Active</option>
+                        <option>Paused</option>
+                        <option>Closed</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Job Listings -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for job in jobs %}
+                <div class="bg-white p-6 rounded-lg shadow-md job-card animate-fade-in">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-xl font-semibold">{{ job.title }}</h3>
+                            <p class="text-gray-500">{{ job.company }}</p>
+                        </div>
+                        <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm">{{ job.status }}</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-map-marker-alt w-5"></i>
+                            <span>{{ job.location }}</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-dollar-sign w-5"></i>
+                            <span>{{ job.salary }}</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-calendar-alt w-5"></i>
+                            <span>Deadline: {{ job.deadline }}</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex space-x-2">
+                        {% for skill in job.skill_list %}
+    <span class="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">{{ skill }}</span>
+{% endfor %}
+                    </div>
+                    <div class="mt-4 flex justify-between items-center">
+                        <a href="#" class="text-indigo-600 hover:text-indigo-700">View Details</a>
+                        <div class="flex space-x-2">
+                            <button class="p-2 hover:bg-gray-100 rounded-full">
+                                <i class="fas fa-edit text-gray-600"></i>
+                            </button>
+                            <button class="p-2 hover:bg-gray-100 rounded-full">
+                                <i class="fas fa-trash text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-gray-600">No Job Postings available at the moment.</p>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add hover animations
+        document.querySelectorAll('.job-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+                card.style.transition = 'all 0.3s ease';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+
+</html>

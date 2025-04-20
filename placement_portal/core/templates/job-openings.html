@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Openings - PlacementCell</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background: #1a1a1a;
+            color: white;
+        }
+        .job-card {
+            transition: transform 0.3s ease;
+        }
+        .job-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 fixed">
+            <div class="p-4">
+                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlacementCell</h2></a>
+                <div class="mt-8">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-full">
+                        <div>
+                            <p class="font-semibold">{{ user.full_name|default:user.email|default:"User" }}</p>
+                            <p class="text-sm text-gray-400">{{ department|default:"Department" }}</p>
+                        </div>
+                    </div>
+                    <nav class="mt-8">
+                        <a href="{% url 'student_dashboard' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="{% url 'job_openings' %}" class="flex items-center space-x-3 text-white bg-indigo-600 p-3 rounded-lg mb-2">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Job Openings</span>
+                        </a>
+                        <a href="{% url 'my_applications' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-file-alt"></i>
+                            <span>My Applications</span>
+                        </a>
+                        <a href="{% url 'ats_score' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-robot"></i>
+                            <span>ATS Score</span>
+                        </a>
+                        <a href="{% url 'interviews' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Interviews</span>
+                        </a>
+                        <a href="{% url 'notifications' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-bell"></i>
+                            <span>Notifications</span>
+                        </a>
+                        <a href="{% url 'Ssettings' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="ml-64 flex-1 p-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold">Job Openings</h1>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <form method="get" action="" class="flex space-x-4">
+                            <div class="flex-1">
+                                <input type="text" name="q" value="{{ query }}" placeholder="Search jobs..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                            </div>
+                            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">Search</button>
+                        </form>
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    <select class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                        <option>All Categories</option>
+                        <option>Software Development</option>
+                        <option>Data Science</option>
+                        <option>Product Management</option>
+                        <option>UI/UX Design</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Job Listings -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for job in jobs %}
+                <div class="bg-white p-6 rounded-lg shadow-md job-card animate-fade-in">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-xl font-semibold">{{ job.title }}</h3>
+                            <p class="text-gray-500">{{ job.company }}</p>
+                        </div>
+                        <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm">Active</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-map-marker-alt w-5"></i>
+                            <span>{{ job.location }}</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-dollar-sign w-5"></i>
+                            <span>{{ job.salary }}</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-calendar-alt w-5"></i>
+                            <span>Deadline: {{ job.deadline }}</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex space-x-2">
+                        {% for skill in job.skill_list %}
+                            <span class="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mt-4 flex justify-between items-center">
+                        <a href="#" class="text-indigo-600 hover:text-indigo-700">View Details</a>
+                        <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">Apply Now</button>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-gray-600">No Job Openings available at the moment.</p>
+                {% endfor %}
+            </div>
+
+            <!-- Load More -->
+            <div class="text-center mt-8">
+                <button class="bg-white text-indigo-600 px-6 py-3 rounded-lg shadow hover:shadow-md transition">
+                    Load More Jobs
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

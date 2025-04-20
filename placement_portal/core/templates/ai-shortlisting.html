@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Shortlisting - PlacementCell</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background: #1a1a1a;
+            color: white;
+        }
+        .progress-ring {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar (same as dashboard) -->
+        <div class="sidebar w-64 fixed">
+            <div class="p-4">
+                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlacementCell</h2></a>
+                <div class="mt-8">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-full">
+                        <div>
+                            <p class="font-semibold">Sarah Johnson</p>
+                            <p class="text-sm text-gray-400">Microsoft HR</p>
+                        </div>
+                    </div>
+                    <nav class="mt-8">
+                        <a href="{% url 'recruiter_dashboard' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="{% url 'job_postings' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Job Postings</span>
+                        </a>
+                        <a href="{% url 'applications' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-users"></i>
+                            <span>Applications</span>
+                        </a>
+                        <a href="{% url 'ai_shortlisting' %}" class="flex items-center space-x-3 text-white bg-indigo-600 p-3 rounded-lg mb-2">
+                            <i class="fas fa-robot"></i>
+                            <span>AI Shortlisting</span>
+                        </a>
+                        <a href="{% url 'schedule_interviews' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Schedule Interviews</span>
+                        </a>
+                        <a href="{% url 'analytics' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Analytics</span>
+                        </a>
+                        <a href="{% url 'Rsettings' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="ml-64 flex-1 p-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold">AI Shortlisting</h1>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition duration-300 flex items-center space-x-2">
+                        <i class="fas fa-cog"></i>
+                        <span>Configure AI</span>
+                    </button>
+                    <div class="relative">
+                        <i class="fas fa-bell text-gray-600 text-xl"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg shadow-md animate-fade-in">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500">Processing Speed</p>
+                            <h3 class="text-2xl font-bold">98%</h3>
+                            <p class="text-sm text-green-500">Faster than manual review</p>
+                        </div>
+                        <div class="w-16 h-16">
+                            <svg class="w-full h-full">
+                                <circle cx="32" cy="32" r="28" fill="none" stroke="#e5e7eb" stroke-width="4"/>
+                                <circle cx="32" cy="32" r="28" fill="none" stroke="#4f46e5" stroke-width="4" stroke-dasharray="175" stroke-dashoffset="3" class="progress-ring"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md animate-fade-in">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500">Accuracy Rate</p>
+                            <h3 class="text-2xl font-bold">95%</h3>
+                            <p class="text-sm text-green-500">Based on feedback</p>
+                        </div>
+                        <div class="w-16 h-16">
+                            <svg class="w-full h-full">
+                                <circle cx="32" cy="32" r="28" fill="none" stroke="#e5e7eb" stroke-width="4"/>
+                                <circle cx="32" cy="32" r="28" fill="none" stroke="#4f46e5" stroke-width="4" stroke-dasharray="175" stroke-dashoffset="15" class="progress-ring"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md animate-fade-in">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500">Time Saved</p>
+                            <h3 class="text-2xl font-bold">45h</h3>
+                            <p class="text-sm text-green-500">This month</p>
+                        </div>
+                        <div class="w-16 h-16 text-indigo-600">
+                            <i class="fas fa-clock text-4xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Configuration -->
+            <div class="bg-white p-6 rounded-lg shadow-md mb-8 animate-fade-in">
+                <h2 class="text-xl font-semibold mb-4">AI Shortlisting Configuration</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-medium mb-2">Skills Assessment</h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="form-checkbox text-indigo-600" checked>
+                                <span>Technical Skills Match</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="form-checkbox text-indigo-600" checked>
+                                <span>Experience Level Analysis</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="form-checkbox text-indigo-600" checked>
+                                <span>Education Background Check</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-medium mb-2">Behavioral Analysis</h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="form-checkbox text-indigo-600" checked>
+                                <span>Communication Skills</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="form-checkbox text-indigo-600" checked>
+                                <span>Leadership Potential</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="form-checkbox text-indigo-600">
+                                <span>Cultural Fit Assessment</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Processing -->
+            <div class="bg-white p-6 rounded-lg shadow-md mb-8 animate-fade-in">
+                <h2 class="text-xl font-semibold mb-4">Currently Processing</h2>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg animate-pulse">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 bg-gray-200 rounded-full"></div>
+                            <div>
+                                <h3 class="font-medium">Software Engineer Applications</h3>
+                                <p class="text-sm text-gray-500">Processing 24 applications</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-20 bg-gray-200 h-2 rounded-full">
+                                <div class="bg-indigo-600 h-2 rounded-full" style="width: 75%"></div>
+                            </div>
+                            <span class="text-sm font-medium">75%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium">UX Designer Applications</h3>
+                                <p class="text-sm text-gray-500">Completed - 18 applications processed</p>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm">Complete</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Insights -->
+            <div class="bg-white p-6 rounded-lg shadow-md animate-fade-in">
+                <h2 class="text-xl font-semibold mb-4">AI Insights</h2>
+                <div class="space-y-4">
+                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div class="flex items-start space-x-3">
+                            <i class="fas fa-lightbulb text-blue-600 mt-1"></i>
+                            <div>
+                                <h3 class="font-medium text-blue-800">Skill Gap Analysis</h3>
+                                <p class="text-sm text-blue-600">73% of applicants lack cloud computing experience. Consider updating job requirements or providing training opportunities.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                        <div class="flex items-start space-x-3">
+                            <i class="fas fa-chart-line text-purple-600 mt-1"></i>
+                            <div>
+                                <h3 class="font-medium text-purple-800">Trend Detection</h3>
+                                <p class="text-sm text-purple-600">Recent increase in applicants with React Native experience. Consider expanding mobile development positions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animation for progress rings
+        document.querySelectorAll('.progress-ring').forEach(ring => {
+            const radius = ring.r.baseVal.value;
+            const circumference = radius * 2 * Math.PI;
+            ring.style.strokeDasharray = `${circumference} ${circumference}`;
+        });
+    </script>
+</body>
+</html>

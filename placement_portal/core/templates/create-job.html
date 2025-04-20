@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Job - PlacementCell</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; }
+        .sidebar { min-height: 100vh; background: #1a1a1a; color: white; }
+        .animate-fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 fixed">
+            <div class="p-4">
+                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlacementCell</h2></a>
+                <div class="mt-8">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-full">
+                        <div>
+                            <p class="font-semibold">Sarah Johnson</p>
+                            <p class="text-sm text-gray-400">Microsoft HR</p>
+                        </div>
+                    </div>
+                    <nav class="mt-8">
+                        <a href="{% url 'recruiter_dashboard' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2"><i class="fas fa-home"></i><span>Dashboard</span></a>
+                        <a href="{% url 'job_postings' %}" class="flex items-center space-x-3 text-white bg-indigo-600 p-3 rounded-lg mb-2"><i class="fas fa-briefcase"></i><span>Job Postings</span></a>
+                        <a href="{% url 'applications' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2"><i class="fas fa-users"></i><span>Applications</span></a>
+                        <a href="{% url 'ai_shortlisting' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2"><i class="fas fa-robot"></i><span>AI Shortlisting</span></a>
+                        <a href="{% url 'schedule_interviews' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2"><i class="fas fa-calendar-alt"></i><span>Schedule Interviews</span></a>
+                        <a href="{% url 'analytics' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2"><i class="fas fa-chart-bar"></i><span>Analytics</span></a>
+                        <a href="{% url 'Rsettings' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2"><i class="fas fa-cog"></i><span>Settings</span></a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="ml-64 flex-1 p-8">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold">Create New Job Posting</h1>
+            </div>
+            <form action="{% url 'create_job' %}" method="post" class="bg-white p-8 rounded-lg shadow-md max-w-2xl mx-auto animate-fade-in">
+                {% csrf_token %}
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Job Title</label>
+                    <input type="text" name="title" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. Software Engineer" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Company Name</label>
+                    <input type="text" name="company" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. Microsoft" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Location</label>
+                    <input type="text" name="location" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. Bengaluru, India" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Job Description</label>
+                    <textarea name="description" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" rows="4" placeholder="Describe the job role, responsibilities, and requirements..." required></textarea>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Skills Required</label>
+                    <input type="text" name="skills" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. Python, Django, React" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Salary Range (per annum)</label>
+                    <input type="text" name="salary" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. 10-15 LPA" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Application Deadline</label>
+                    <input type="date" name="deadline" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                </div>
+                <div class="flex justify-end">
+                    <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition duration-300 flex items-center space-x-2">
+                        <i class="fas fa-plus"></i>
+                        <span>Create Job</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
