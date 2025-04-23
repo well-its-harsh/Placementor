@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ATS Score - PlacementCell</title>
+    <title>ATS Score - PlaceMentor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -42,14 +42,15 @@
         <!-- Sidebar -->
         <div class="sidebar w-64 fixed">
             <div class="p-4">
-                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlacementCell</h2></a>
+                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlaceMentor</h2></a>
                 <div class="mt-8">
                     <div class="flex items-center space-x-3 mb-4">
-                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-full">
+                        <span class="inline-block w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fas fa-user"></i>
+                        </span>
                         <div>
                             <p class="font-semibold">{{ user.full_name|default:user.email|default:"User" }}</p>
-                            <p class="text-sm text-gray-400">{{ department|default:"Department" }}</p>
-                        </div>
+                            <p class="text-sm text-gray-400">{{ department|default:"Department" }}</p>                        </div>
                     </div>
                     <nav class="mt-8">
                         <a href="{% url 'student_dashboard' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
@@ -80,6 +81,10 @@
                             <i class="fas fa-cog"></i>
                             <span>Settings</span>
                         </a>
+                        <a href="{% url 'logout' %}" class="flex items-center space-x-3 text-red-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
                     </nav>
                 </div>
             </div>
@@ -87,44 +92,32 @@
 
         <!-- Main Content -->
         <div class="ml-64 flex-1 p-8">
+            <!-- DEBUG: Show errors only if present -->
+            {% if ats_error %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <strong>Error:</strong> {{ ats_error }}
+            </div>
+            {% endif %}
             <!-- Header -->
             <div class="flex justify-between items-center mb-8">
                 <h1 class="text-2xl font-bold">ATS Score Analysis</h1>
-                <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+                <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700" onclick="document.getElementById('resume-upload-form').style.display='block'">
                     <i class="fas fa-upload mr-2"></i>Upload New Resume
                 </button>
+                <form id="resume-upload-form" method="post" enctype="multipart/form-data" action="{% url 'upload_resume' %}" style="display:none;">
+                    {% csrf_token %}
+                    <input id="resume-upload" type="file" name="resume" accept="application/pdf" onchange="this.form.submit();">
+                </form>
             </div>
 
             <!-- Score Overview -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <!-- Overall Score -->
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold">Overall Score</h3>
-                        <i class="fas fa-info-circle text-gray-400 hover:text-indigo-600 cursor-pointer"></i>
-                    </div>
-                    <div class="flex items-center justify-center">
-                        <div class="relative">
-                            <svg class="w-32 h-32" viewBox="0 0 36 36">
-                                <path d="M18 2.0845
-                                    a 15.9155 15.9155 0 0 1 0 31.831
-                                    a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    fill="none"
-                                    stroke="#E2E8F0"
-                                    stroke-width="3"
-                                />
-                                <path d="M18 2.0845
-                                    a 15.9155 15.9155 0 0 1 0 31.831
-                                    a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    fill="none"
-                                    stroke="#4F46E5"
-                                    stroke-width="3"
-                                    stroke-dasharray="85, 100"
-                                    class="score-ring"
-                                />
-                                <text x="18" y="20.35" class="text-3xl font-bold" text-anchor="middle" fill="#1F2937">85%</text>
-                            </svg>
-                        </div>
+                <!-- Overall Score Card -->
+                <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                    <div class="flex flex-col items-center justify-center">
+                        <h3 class="text-lg font-semibold mb-2">Overall Score</h3>
+                        <div class="text-5xl font-bold text-indigo-700">{{ ats_result.score|default:'N/A' }}</div>
+                        <div class="text-sm text-gray-500 mt-1">(Based on Resume Analysis)</div>
                     </div>
                 </div>
 
@@ -135,19 +128,24 @@
                         <div>
                             <div class="flex justify-between mb-1">
                                 <span class="text-sm text-gray-600">Technical Skills</span>
-                                <span class="text-sm font-semibold">90%</span>
+                                <span class="text-sm font-semibold">{{ ats_result.skills.technical|default:'-' }}%</span>
                             </div>
-                            <div class="h-2 bg-gray-200 rounded">
-                                <div class="h-2 bg-green-500 rounded skill-bar" style="width: 90%"></div>
+                            <div class="h-2 bg-green-100 rounded mb-2">
+                                <div class="h-2 bg-green-500 rounded skill-bar" id="bar-technical" style="width: 0%"></div>
                             </div>
-                        </div>
-                        <div>
                             <div class="flex justify-between mb-1">
                                 <span class="text-sm text-gray-600">Soft Skills</span>
-                                <span class="text-sm font-semibold">75%</span>
+                                <span class="text-sm font-semibold">{{ ats_result.skills.soft|default:'-' }}%</span>
                             </div>
-                            <div class="h-2 bg-gray-200 rounded">
-                                <div class="h-2 bg-blue-500 rounded skill-bar" style="width: 75%"></div>
+                            <div class="h-2 bg-blue-100 rounded mb-2">
+                                <div class="h-2 bg-blue-500 rounded skill-bar" id="bar-soft" style="width: 0%"></div>
+                            </div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm text-gray-600">Domain Skills</span>
+                                <span class="text-sm font-semibold">{{ ats_result.skills.domain|default:'-' }}%</span>
+                            </div>
+                            <div class="h-2 bg-yellow-100 rounded">
+                                <div class="h-2 bg-yellow-500 rounded skill-bar" id="bar-domain" style="width: 0%"></div>
                             </div>
                         </div>
                     </div>
@@ -157,18 +155,22 @@
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <h3 class="text-lg font-semibold mb-4">Format Compliance</h3>
                     <div class="space-y-3">
+                        {% for key, val in ats_result.format_compliance.items %}
                         <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-600">File Format</span>
-                            <i class="fas fa-check-circle text-green-500"></i>
+                            <span class="text-sm text-gray-600">{{ key|capfirst }}</span>
+                            {% if val.status == 'correct' %}
+                                <i class="fas fa-check-circle text-green-500"></i>
+                            {% else %}
+                                <i class="fas fa-exclamation-circle text-yellow-500"></i>
+                                {% if val.suggestion %}
+                                <button class="toggle-format-suggestion ml-6 mb-1 px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs">
+                                    <i class="fas fa-exclamation-circle mr-1"></i>Show Suggestion
+                                </button>
+                                <div class="ml-6 text-xs text-gray-500 suggestion-msg hidden">{{ val.suggestion }}</div>
+                                {% endif %}
+                            {% endif %}
                         </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-600">Length</span>
-                            <i class="fas fa-check-circle text-green-500"></i>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-600">Sections</span>
-                            <i class="fas fa-exclamation-circle text-yellow-500"></i>
-                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -178,59 +180,21 @@
                 <!-- Improvement Suggestions -->
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <h3 class="text-lg font-semibold mb-4">Improvement Suggestions</h3>
-                    <div class="space-y-4">
-                        <div class="flex items-start space-x-3 animate-slide-in" style="animation-delay: 0.1s">
-                            <i class="fas fa-lightbulb text-yellow-500 mt-1"></i>
-                            <div>
-                                <p class="text-sm font-medium">Add quantifiable achievements</p>
-                                <p class="text-xs text-gray-500">Include specific metrics and results from your experiences</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start space-x-3 animate-slide-in" style="animation-delay: 0.2s">
-                            <i class="fas fa-lightbulb text-yellow-500 mt-1"></i>
-                            <div>
-                                <p class="text-sm font-medium">Enhance technical skills section</p>
-                                <p class="text-xs text-gray-500">Add more relevant programming languages and tools</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start space-x-3 animate-slide-in" style="animation-delay: 0.3s">
-                            <i class="fas fa-lightbulb text-yellow-500 mt-1"></i>
-                            <div>
-                                <p class="text-sm font-medium">Improve formatting consistency</p>
-                                <p class="text-xs text-gray-500">Maintain consistent font sizes and spacing throughout</p>
-                            </div>
-                        </div>
-                    </div>
+                    <ul class="list-disc pl-6 space-y-1">
+                        {% if ats_result.suggestions and ats_result.suggestions|length > 0 %}
+                            {% for suggestion in ats_result.suggestions %}
+                                <li>{{ suggestion }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="text-gray-500">No suggestions available.</li>
+                        {% endif %}
+                    </ul>
                 </div>
-
-                <!-- Industry Comparison -->
+                <!-- Candidate Summary -->
                 <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-lg font-semibold mb-4">Industry Comparison</h3>
-                    <div class="space-y-4">
-                        <div>
-                            <div class="flex justify-between mb-1">
-                                <span class="text-sm text-gray-600">Your Score</span>
-                                <span class="text-sm font-semibold">85%</span>
-                            </div>
-                            <div class="h-2 bg-gray-200 rounded">
-                                <div class="h-2 bg-indigo-600 rounded skill-bar" style="width: 85%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between mb-1">
-                                <span class="text-sm text-gray-600">Industry Average</span>
-                                <span class="text-sm font-semibold">70%</span>
-                            </div>
-                            <div class="h-2 bg-gray-200 rounded">
-                                <div class="h-2 bg-gray-400 rounded skill-bar" style="width: 70%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-4 p-3 bg-green-50 rounded-lg">
-                        <p class="text-sm text-green-700">
-                            <i class="fas fa-chart-line mr-2"></i>
-                            Your resume is performing better than 75% of candidates in your field
-                        </p>
+                    <h3 class="text-lg font-semibold mb-4">Candidate Summary</h3>
+                    <div class="vcard p-4 bg-gray-50 rounded">
+                        <p class="text-gray-700">{{ ats_result.summary|default:'No summary available.' }}</p>
                     </div>
                 </div>
             </div>
@@ -293,5 +257,33 @@
             </div>
         </div>
     </div>
+    <script>
+    // Toggle suggestion display for Format Compliance
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.toggle-format-suggestion').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var suggestion = btn.parentElement.querySelector('.suggestion-msg');
+                if (suggestion) suggestion.classList.toggle('hidden');
+            });
+        });
+        // Dynamically set skill bar widths from LLM results
+        try {
+            var ats = {{ ats_result|safe }};
+            if (ats && ats.skills) {
+                if (typeof ats.skills.technical !== 'undefined' && document.getElementById('bar-technical')) {
+                    document.getElementById('bar-technical').style.width = ats.skills.technical + '%';
+                }
+                if (typeof ats.skills.soft !== 'undefined' && document.getElementById('bar-soft')) {
+                    document.getElementById('bar-soft').style.width = ats.skills.soft + '%';
+                }
+                if (typeof ats.skills.domain !== 'undefined' && document.getElementById('bar-domain')) {
+                    document.getElementById('bar-domain').style.width = ats.skills.domain + '%';
+                }
+            }
+        } catch (e) {
+            // Fail silently if ats_result is not valid JSON
+        }
+    });
+    </script>
 </body>
 </html>

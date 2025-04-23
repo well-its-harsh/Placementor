@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Details - PlaceMentor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; }
+        .sidebar { min-height: 100vh; background: #1a1a1a; color: white; }
+        .application-detail-card {
+            animation: fadeIn 0.7s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 fixed">
+            <div class="p-4">
+                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlaceMentor</h2></a>
+                <div class="mt-8">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div>
+                            <p class="font-semibold">{{ user.full_name|default:user.email|default:"User" }}</p>
+                            <p class="text-sm text-gray-400">{{ department|default:"Department" }}</p>
+                        </div>
+                    </div>
+                    <nav class="mt-8">
+                        <a href="{% url 'student_dashboard' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="{% url 'job_openings' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Job Openings</span>
+                        </a>
+                        <a href="{% url 'my_applications' %}" class="flex items-center space-x-3 text-white bg-indigo-600 p-3 rounded-lg mb-2">
+                            <i class="fas fa-file-alt"></i>
+                            <span>My Applications</span>
+                        </a>
+                        <a href="{% url 'ats_score' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-robot"></i>
+                            <span>ATS Score</span>
+                        </a>
+                        <a href="{% url 'interviews' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Interviews</span>
+                        </a>
+                        <a href="{% url 'notifications' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-bell"></i>
+                            <span>Notifications</span>
+                        </a>
+                        <a href="{% url 'Ssettings' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                        <a href="{% url 'logout' %}" class="flex items-center space-x-3 text-red-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="ml-64 flex-1 p-8">
+            <div class="application-detail-card bg-white rounded-lg shadow-lg p-8">
+                <h1 class="text-3xl font-bold mb-2 text-indigo-700">{{ application.job.title }}</h1>
+                <p class="text-lg text-gray-700 mb-1">Company: <span class="font-semibold">{{ application.job.company }}</span></p>
+                <div class="flex flex-wrap space-x-8 mb-4">
+                    <span class="inline-block mt-2 text-gray-500"><i class="fas fa-map-marker-alt mr-2"></i>{{ application.job.location }}</span>
+                    <span class="inline-block mt-2 text-gray-500"><i class="fas fa-calendar-alt mr-2"></i>Deadline: {{ application.job.deadline }}</span>
+                    <span class="inline-block mt-2 text-gray-500"><i class="fas fa-clock mr-2"></i>Applied: {{ application.applied_at|date:"F j, Y, g:i a" }}</span>
+                </div>
+                <div class="mb-6">
+                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Applied</span>
+                </div>
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold mb-2">Job Description</h2>
+                    <p class="text-gray-600">{{ application.job.description }}</p>
+                </div>
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold mb-2">Skills Required</h2>
+                    <div class="flex flex-wrap gap-2">
+                        {% for skill in skills_list %}
+                        <span class="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold mb-2">Salary</h2>
+                    <span class="text-gray-700">{{ application.job.salary }}</span>
+                </div>
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold mb-2">Recruiter Info</h2>
+                    <span class="text-gray-700">Recruiter: {{ application.job.recruiter.get_full_name|default:application.job.recruiter.username }}</span>
+                </div>
+                <a href="{% url 'my_applications' %}" class="inline-block mt-4 px-6 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">Back to My Applications</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

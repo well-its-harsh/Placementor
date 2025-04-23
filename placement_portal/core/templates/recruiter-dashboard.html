@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recruiter Dashboard - PlacementCell</title>
+    <title>Recruiter Dashboard - PlaceMentor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -23,13 +23,15 @@
         <!-- Sidebar -->
         <div class="sidebar w-64 fixed">
             <div class="p-4">
-                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlacementCell</h2></a>
+                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlaceMentor</h2></a>
                 <div class="mt-8">
                     <div class="flex items-center space-x-3 mb-4">
-                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-full">
+                        <span class="inline-block w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fas fa-user"></i>
+                        </span>
                         <div>
-                            <p class="font-semibold">Sarah Johnson</p>
-                            <p class="text-sm text-gray-400">Microsoft HR</p>
+                            <p class="font-semibold">{{ user.full_name|default:user.email|default:"Recruiter" }}</p>
+                            <p class="text-sm text-gray-400">{{ user.company_name|default:"Company" }}</p>
                         </div>
                     </div>
                     <nav class="mt-8">
@@ -61,6 +63,10 @@
                             <i class="fas fa-cog"></i>
                             <span>Settings</span>
                         </a>
+                        <a href="{% url 'logout' %}" class="flex items-center space-x-3 text-red-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
                     </nav>
                 </div>
             </div>
@@ -72,7 +78,7 @@
             <div class="flex justify-between items-center mb-8">
                 <h1 class="text-2xl font-bold">Recruiter Dashboard</h1>
                 <div class="flex items-center space-x-4">
-                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+                    <button id="post-new-job-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
                         Post New Job
                     </button>
                     <div class="relative">
@@ -88,7 +94,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm">Total Applications</p>
-                            <h3 class="text-2xl font-bold">156</h3>
+                            <h3 class="text-2xl font-bold">{{ total_applications }}</h3>
                         </div>
                         <div class="bg-blue-100 p-3 rounded-full">
                             <i class="fas fa-file-alt text-blue-600"></i>
@@ -99,7 +105,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm">Shortlisted</p>
-                            <h3 class="text-2xl font-bold">45</h3>
+                            <h3 class="text-2xl font-bold">{{ shortlisted }}</h3>
                         </div>
                         <div class="bg-green-100 p-3 rounded-full">
                             <i class="fas fa-check-circle text-green-600"></i>
@@ -110,7 +116,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm">Interviews</p>
-                            <h3 class="text-2xl font-bold">12</h3>
+                            <h3 class="text-2xl font-bold">{{ interviews }}</h3>
                         </div>
                         <div class="bg-purple-100 p-3 rounded-full">
                             <i class="fas fa-calendar-check text-purple-600"></i>
@@ -121,7 +127,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm">Offers Made</p>
-                            <h3 class="text-2xl font-bold">8</h3>
+                            <h3 class="text-2xl font-bold">{{ offers_made }}</h3>
                         </div>
                         <div class="bg-yellow-100 p-3 rounded-full">
                             <i class="fas fa-trophy text-yellow-600"></i>
@@ -136,42 +142,24 @@
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <h2 class="text-xl font-semibold mb-4">Recent Applications</h2>
                     <div class="space-y-4">
+                        {% for app in recent_applications %}
                         <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                             <div>
-                                <p class="font-medium">John Smith</p>
-                                <p class="text-sm text-gray-500">Software Engineer</p>
+                                <p class="font-medium">{{ app.user.get_full_name|default:app.user.email }}</p>
+                                <p class="text-sm text-gray-500">{{ app.job.title }}</p>
                             </div>
                             <div class="flex items-center space-x-2">
-                                <span class="px-2 py-1 bg-green-100 text-green-600 text-sm rounded-full">Shortlisted</span>
+                                <span class="px-2 py-1 text-sm rounded-full {% if app.status == 'approved' %}bg-green-100 text-green-600{% elif app.status == 'rejected' %}bg-red-100 text-red-600{% else %}bg-yellow-100 text-yellow-600{% endif %}">
+                                    {{ app.status|title }}
+                                </span>
                                 <button class="text-indigo-600 hover:text-indigo-700">
                                     <i class="fas fa-ellipsis-v"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <div>
-                                <p class="font-medium">Emma Wilson</p>
-                                <p class="text-sm text-gray-500">Full Stack Developer</p>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <span class="px-2 py-1 bg-yellow-100 text-yellow-600 text-sm rounded-full">Pending</span>
-                                <button class="text-indigo-600 hover:text-indigo-700">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <div>
-                                <p class="font-medium">Michael Brown</p>
-                                <p class="text-sm text-gray-500">Data Scientist</p>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <span class="px-2 py-1 bg-red-100 text-red-600 text-sm rounded-full">Rejected</span>
-                                <button class="text-indigo-600 hover:text-indigo-700">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                </button>
-                            </div>
-                        </div>
+                        {% empty %}
+                        <div class="text-gray-400">No recent applications.</div>
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -179,12 +167,13 @@
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <h2 class="text-xl font-semibold mb-4">Upcoming Interviews</h2>
                     <div class="space-y-4">
+                        {% for interview in upcoming_interviews %}
                         <div class="border-l-4 border-indigo-600 pl-4">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <p class="font-medium">John Smith</p>
-                                    <p class="text-sm text-gray-500">Software Engineer</p>
-                                    <p class="text-sm text-gray-500 mt-1">Tomorrow, 10:00 AM</p>
+                                    <p class="font-medium">{{ interview.application.user.get_full_name|default:interview.application.user.email }}</p>
+                                    <p class="text-sm text-gray-500">{{ interview.application.job.title }}</p>
+                                    <p class="text-sm text-gray-500 mt-1">{{ interview.scheduled_time|date:'M d, H:i' }}</p>
                                 </div>
                                 <div class="flex space-x-2">
                                     <button class="text-green-600 hover:text-green-700">
@@ -196,27 +185,24 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="border-l-4 border-indigo-600 pl-4">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <p class="font-medium">Sarah Davis</p>
-                                    <p class="text-sm text-gray-500">Full Stack Developer</p>
-                                    <p class="text-sm text-gray-500 mt-1">March 15, 2:00 PM</p>
-                                </div>
-                                <div class="flex space-x-2">
-                                    <button class="text-green-600 hover:text-green-700">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-700">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                        {% empty %}
+                        <div class="text-gray-400">No upcoming interviews.</div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btn = document.getElementById('post-new-job-btn');
+            if (btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = "{% url 'create_job' %}";
+                });
+            }
+        });
+    </script>
 </body>
 </html>

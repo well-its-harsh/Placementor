@@ -39,8 +39,31 @@ Desktop.ini
 # Test/coverage
 htmlcov/
 .coverage
-.tox/
-.nox/
-.coverage.*
-.cache
-.pytest_cache/
+
+# PyCharm
+.idea/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS junk files
+*.swp
+*.swo
+
+# PDF output
+*.pdf
+
+# Node
+node_modules/
+
+# Misc
+*.bak
+*.tmp
+credentials.json
+
+# Ignore requirements lock files
+Pipfile.lock
+poetry.lock
+
+# Ignore migrations if desired (uncomment next line)
+# */migrations/

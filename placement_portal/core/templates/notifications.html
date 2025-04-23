@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notifications - PlacementCell</title>
+    <title>Notifications - PlaceMentor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -50,10 +50,12 @@
         <!-- Sidebar -->
         <div class="sidebar w-64 fixed">
             <div class="p-4">
-                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlacementCell</h2></a>
+                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlaceMentor</h2></a>
                 <div class="mt-8">
                     <div class="flex items-center space-x-3 mb-4">
-                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-full">
+                        <span class="inline-block w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fas fa-user"></i>
+                        </span>
                         <div>
                             <p class="font-semibold">{{ user.full_name|default:user.email|default:"User" }}</p>
                             <p class="text-sm text-gray-400">{{ department|default:"Department" }}</p>
@@ -88,6 +90,10 @@
                             <i class="fas fa-cog"></i>
                             <span>Settings</span>
                         </a>
+                        <a href="{% url 'logout' %}" class="flex items-center space-x-3 text-red-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
                     </nav>
                 </div>
             </div>
@@ -117,45 +123,33 @@
             <div class="mb-8">
                 <h2 class="text-lg font-semibold mb-4">Today</h2>
                 <div class="space-y-4">
-                    <div class="notification-card bg-white p-4 rounded-lg shadow-md slide-in" style="animation-delay: 0.1s">
+                    {% for notif in notifications_today %}
+                    <div class="notification-card bg-white p-4 rounded-lg shadow-md slide-in">
                         <div class="flex items-start">
-                            <div class="flex-shrink-0 bg-green-100 p-2 rounded-full">
-                                <i class="fas fa-check text-green-600"></i>
+                            <div class="flex-shrink-0 {{ notif.icon_bg }} p-2 rounded-full">
+                                <i class="fas {{ notif.icon }} {{ notif.icon_color }}"></i>
                             </div>
                             <div class="ml-4 flex-grow">
                                 <div class="flex items-start justify-between">
                                     <div>
-                                        <p class="font-medium">Application Shortlisted</p>
-                                        <p class="text-sm text-gray-600">Your application for Software Engineer position at Google has been shortlisted.</p>
+                                        <p class="font-medium">{{ notif.title }}</p>
+                                        <p class="text-sm text-gray-600">{{ notif.desc }}</p>
                                     </div>
-                                    <span class="text-xs text-gray-500">2 hours ago</span>
+                                    <span class="text-xs text-gray-500">{{ notif.time|timesince }} ago</span>
                                 </div>
                                 <div class="mt-2">
-                                    <button class="text-indigo-600 text-sm hover:text-indigo-700">View Application →</button>
+                                    {% if notif.url %}
+                                        <a href="{{ notif.url }}" class="text-indigo-600 text-sm hover:text-indigo-700">{{ notif.cta }}</a>
+                                    {% else %}
+                                        <button class="text-indigo-600 text-sm hover:text-indigo-700">{{ notif.cta }}</button>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="notification-card bg-white p-4 rounded-lg shadow-md slide-in" style="animation-delay: 0.2s">
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 bg-blue-100 p-2 rounded-full">
-                                <i class="fas fa-calendar text-blue-600"></i>
-                            </div>
-                            <div class="ml-4 flex-grow">
-                                <div class="flex items-start justify-between">
-                                    <div>
-                                        <p class="font-medium">Interview Scheduled</p>
-                                        <p class="text-sm text-gray-600">Technical interview scheduled with Microsoft for tomorrow at 10:00 AM.</p>
-                                    </div>
-                                    <span class="text-xs text-gray-500">5 hours ago</span>
-                                </div>
-                                <div class="mt-2">
-                                    <button class="text-indigo-600 text-sm hover:text-indigo-700">View Details →</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {% empty %}
+                    <div class="text-gray-400">No notifications for today.</div>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -163,45 +157,33 @@
             <div class="mb-8">
                 <h2 class="text-lg font-semibold mb-4">Yesterday</h2>
                 <div class="space-y-4">
-                    <div class="notification-card bg-white p-4 rounded-lg shadow-md slide-in" style="animation-delay: 0.3s">
+                    {% for notif in notifications_yesterday %}
+                    <div class="notification-card bg-white p-4 rounded-lg shadow-md slide-in">
                         <div class="flex items-start">
-                            <div class="flex-shrink-0 bg-yellow-100 p-2 rounded-full">
-                                <i class="fas fa-briefcase text-yellow-600"></i>
+                            <div class="flex-shrink-0 {{ notif.icon_bg }} p-2 rounded-full">
+                                <i class="fas {{ notif.icon }} {{ notif.icon_color }}"></i>
                             </div>
                             <div class="ml-4 flex-grow">
                                 <div class="flex items-start justify-between">
                                     <div>
-                                        <p class="font-medium">New Job Match</p>
-                                        <p class="text-sm text-gray-600">A new job posting matches your profile: Full Stack Developer at Amazon</p>
+                                        <p class="font-medium">{{ notif.title }}</p>
+                                        <p class="text-sm text-gray-600">{{ notif.desc }}</p>
                                     </div>
                                     <span class="text-xs text-gray-500">Yesterday</span>
                                 </div>
                                 <div class="mt-2">
-                                    <button class="text-indigo-600 text-sm hover:text-indigo-700">View Job →</button>
+                                    {% if notif.url %}
+                                        <a href="{{ notif.url }}" class="text-indigo-600 text-sm hover:text-indigo-700">{{ notif.cta }}</a>
+                                    {% else %}
+                                        <button class="text-indigo-600 text-sm hover:text-indigo-700">{{ notif.cta }}</button>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="notification-card bg-white p-4 rounded-lg shadow-md slide-in" style="animation-delay: 0.4s">
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 bg-purple-100 p-2 rounded-full">
-                                <i class="fas fa-robot text-purple-600"></i>
-                            </div>
-                            <div class="ml-4 flex-grow">
-                                <div class="flex items-start justify-between">
-                                    <div>
-                                        <p class="font-medium">ATS Score Updated</p>
-                                        <p class="text-sm text-gray-600">Your resume's ATS score has improved by 15 points!</p>
-                                    </div>
-                                    <span class="text-xs text-gray-500">Yesterday</span>
-                                </div>
-                                <div class="mt-2">
-                                    <button class="text-indigo-600 text-sm hover:text-indigo-700">View Score →</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {% empty %}
+                    <div class="text-gray-400">No notifications for yesterday.</div>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -209,25 +191,33 @@
             <div>
                 <h2 class="text-lg font-semibold mb-4">Older</h2>
                 <div class="space-y-4">
-                    <div class="notification-card bg-white p-4 rounded-lg shadow-md slide-in" style="animation-delay: 0.5s">
+                    {% for notif in notifications_older %}
+                    <div class="notification-card bg-white p-4 rounded-lg shadow-md slide-in">
                         <div class="flex items-start">
-                            <div class="flex-shrink-0 bg-red-100 p-2 rounded-full">
-                                <i class="fas fa-exclamation-circle text-red-600"></i>
+                            <div class="flex-shrink-0 {{ notif.icon_bg }} p-2 rounded-full">
+                                <i class="fas {{ notif.icon }} {{ notif.icon_color }}"></i>
                             </div>
                             <div class="ml-4 flex-grow">
                                 <div class="flex items-start justify-between">
                                     <div>
-                                        <p class="font-medium">Application Deadline Reminder</p>
-                                        <p class="text-sm text-gray-600">Only 2 days left to apply for Software Engineer position at Meta</p>
+                                        <p class="font-medium">{{ notif.title }}</p>
+                                        <p class="text-sm text-gray-600">{{ notif.desc }}</p>
                                     </div>
-                                    <span class="text-xs text-gray-500">2 days ago</span>
+                                    <span class="text-xs text-gray-500">{{ notif.time|date:'M d, Y' }}</span>
                                 </div>
                                 <div class="mt-2">
-                                    <button class="text-indigo-600 text-sm hover:text-indigo-700">Apply Now →</button>
+                                    {% if notif.url %}
+                                        <a href="{{ notif.url }}" class="text-indigo-600 text-sm hover:text-indigo-700">{{ notif.cta }}</a>
+                                    {% else %}
+                                        <button class="text-indigo-600 text-sm hover:text-indigo-700">{{ notif.cta }}</button>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {% empty %}
+                    <div class="text-gray-400">No older notifications.</div>
+                    {% endfor %}
                 </div>
             </div>
 

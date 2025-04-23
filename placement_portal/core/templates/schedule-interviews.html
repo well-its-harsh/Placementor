@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schedule Interviews - PlacementCell</title>
+    <title>Schedule Interviews - PlaceMentor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -43,13 +43,15 @@
         <!-- Sidebar (same as dashboard) -->
         <div class="sidebar w-64 fixed">
             <div class="p-4">
-                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlacementCell</h2></a>
+                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlaceMentor</h2></a>
                 <div class="mt-8">
                     <div class="flex items-center space-x-3 mb-4">
-                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-full">
+                        <span class="inline-block w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fas fa-user"></i>
+                        </span>
                         <div>
-                            <p class="font-semibold">Sarah Johnson</p>
-                            <p class="text-sm text-gray-400">Microsoft HR</p>
+                            <p class="font-semibold">{{ user.full_name|default:user.email|default:"Recruiter" }}</p>
+                            <p class="text-sm text-gray-400">{{ user.company_name|default:"Company" }}</p>
                         </div>
                     </div>
                     <nav class="mt-8">
@@ -80,6 +82,10 @@
                         <a href="{% url 'Rsettings' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
                             <i class="fas fa-cog"></i>
                             <span>Settings</span>
+                        </a>
+                        <a href="{% url 'logout' %}" class="flex items-center space-x-3 text-red-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
                         </a>
                     </nav>
                 </div>
@@ -184,74 +190,75 @@
                     </div>
                 </div>
 
-                <!-- Upcoming Interviews -->
+                <!-- Upcoming Interviews (dynamic) -->
                 <div class="col-span-1">
                     <div class="bg-white p-6 rounded-lg shadow-md animate-fade-in">
                         <h2 class="text-xl font-semibold mb-4">Upcoming Interviews</h2>
                         <div class="space-y-4">
-                            <!-- Interview Card 1 -->
+                            {% for interview in upcoming_interviews %}
                             <div class="interview-card p-4 bg-indigo-50 rounded-lg border border-indigo-100">
                                 <div class="flex justify-between items-start">
                                     <div>
-                                        <h3 class="font-medium">John Smith</h3>
-                                        <p class="text-sm text-gray-600">Software Engineer</p>
+                                        <h3 class="font-medium">{{ interview.application.user.get_full_name|default:interview.application.user.email }}</h3>
+                                        <p class="text-sm text-gray-600">{{ interview.application.job.title }}</p>
                                         <div class="flex items-center mt-2 text-sm text-gray-500">
                                             <i class="fas fa-clock mr-2"></i>
-                                            <span>10:00 AM - 11:00 AM</span>
+                                            <span>{{ interview.scheduled_time|date:"M d, Y H:i" }} - {{ interview.scheduled_time|add:'01:00:00'|date:"H:i" }}</span>
+                                        </div>
+                                        <div class="flex items-center mt-2 text-sm text-blue-700">
+                                            <i class="fas fa-video mr-2"></i>
+                                            <a href="{{ interview.gmeet_link }}" target="_blank" class="underline">Join Google Meet</a>
                                         </div>
                                     </div>
                                     <div class="flex space-x-2">
-                                        <button class="p-2 hover:bg-indigo-100 rounded-full">
+                                        <a href="{{ interview.gmeet_link }}" target="_blank" rel="noopener noreferrer" class="p-2 hover:bg-indigo-100 rounded-full">
                                             <i class="fas fa-video text-indigo-600"></i>
-                                        </button>
-                                        <button class="p-2 hover:bg-indigo-100 rounded-full">
-                                            <i class="fas fa-ellipsis-v text-gray-600"></i>
-                                        </button>
+                                        </a>
+                                        <form method="post" action="{% url 'delete_interview' interview.id %}" onsubmit="return confirm('Are you sure you want to delete this interview?');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="p-2 hover:bg-red-100 rounded-full" title="Delete Interview">
+                                                <i class="fas fa-trash text-red-600"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
+                            {% empty %}
+                            <p class="text-gray-500">No upcoming interviews scheduled.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
 
-                            <!-- Interview Card 2 -->
-                            <div class="interview-card p-4 bg-green-50 rounded-lg border border-green-100">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <h3 class="font-medium">Emma Wilson</h3>
-                                        <p class="text-sm text-gray-600">UX Designer</p>
-                                        <div class="flex items-center mt-2 text-sm text-gray-500">
-                                            <i class="fas fa-clock mr-2"></i>
-                                            <span>2:00 PM - 3:00 PM</span>
-                                        </div>
-                                    </div>
-                                    <div class="flex space-x-2">
-                                        <button class="p-2 hover:bg-green-100 rounded-full">
-                                            <i class="fas fa-video text-green-600"></i>
-                                        </button>
-                                        <button class="p-2 hover:bg-green-100 rounded-full">
-                                            <i class="fas fa-ellipsis-v text-gray-600"></i>
-                                        </button>
-                                    </div>
+                <!-- Schedule Interview Form for Approved Applicants -->
+                <div class="col-span-2 mb-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md animate-fade-in mt-8">
+                        <h2 class="text-xl font-semibold mb-4">Schedule Interview for Approved Applicants</h2>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label for="application_id" class="block font-medium mb-1">Select Applicant</label>
+                                    <select id="application_id" name="application_id" class="w-full border rounded px-3 py-2" required>
+                                        <option value="" disabled selected>Select an applicant</option>
+                                        {% for app in approved_apps %}
+                                        <option value="{{ app.id }}">
+                                            {{ app.user.full_name|default:app.user.username|default:app.user.email }} - {{ app.job.title }} ({{ app.job.company }})
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="scheduled_time" class="block font-medium mb-1">Interview Date & Time</label>
+                                    <input type="datetime-local" id="scheduled_time" name="scheduled_time" class="w-full border rounded px-3 py-2" required>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label for="gmeet_link" class="block font-medium mb-1">Google Meet Link (optional)</label>
+                                    <input type="url" id="gmeet_link" name="gmeet_link" placeholder="https://meet.google.com/abc-defg-hij" class="w-full border rounded px-3 py-2">
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Quick Actions -->
-                        <div class="mt-6">
-                            <h3 class="font-medium mb-3">Quick Actions</h3>
-                            <div class="space-y-2">
-                                <button class="w-full p-2 text-left hover:bg-gray-50 rounded-md flex items-center space-x-2">
-                                    <i class="fas fa-video text-indigo-600"></i>
-                                    <span>Start Video Call</span>
-                                </button>
-                                <button class="w-full p-2 text-left hover:bg-gray-50 rounded-md flex items-center space-x-2">
-                                    <i class="fas fa-calendar-alt text-indigo-600"></i>
-                                    <span>Reschedule Interview</span>
-                                </button>
-                                <button class="w-full p-2 text-left hover:bg-gray-50 rounded-md flex items-center space-x-2">
-                                    <i class="fas fa-envelope text-indigo-600"></i>
-                                    <span>Send Reminder</span>
-                                </button>
-                            </div>
-                        </div>
+                            <button type="submit" class="bg-indigo-600 text-white py-2 px-6 rounded hover:bg-indigo-700 transition">Schedule Interview &amp; Create GMeet</button>
+                        </form>
                     </div>
                 </div>
             </div>

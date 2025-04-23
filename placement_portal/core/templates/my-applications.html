@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Applications - PlacementCell</title>
+    <title>My Applications - PlaceMentor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -37,10 +37,12 @@
         <!-- Sidebar -->
         <div class="sidebar w-64 fixed">
             <div class="p-4">
-                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlacementCell</h2></a>
+                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlaceMentor</h2></a>
                 <div class="mt-8">
                     <div class="flex items-center space-x-3 mb-4">
-                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-full">
+                        <span class="inline-block w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fas fa-user"></i>
+                        </span>
                         <div>
                             <p class="font-semibold">{{ user.full_name|default:user.email|default:"User" }}</p>
                             <p class="text-sm text-gray-400">{{ department|default:"Department" }}</p>
@@ -75,6 +77,10 @@
                             <i class="fas fa-cog"></i>
                             <span>Settings</span>
                         </a>
+                        <a href="{% url 'logout' %}" class="flex items-center space-x-3 text-red-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
                     </nav>
                 </div>
             </div>
@@ -98,104 +104,40 @@
 
             <!-- Applications List -->
             <div class="space-y-4">
-                <!-- Application 1 -->
+                {% for application in applications %}
                 <div class="application-card bg-white p-6 rounded-lg shadow-md">
                     <div class="flex justify-between items-start">
-                        <div class="flex items-start space-x-4">
-                            <img src="https://via.placeholder.com/48" alt="Google" class="rounded">
-                            <div>
-                                <h3 class="text-lg font-semibold">Software Engineer</h3>
-                                <p class="text-gray-600">Google</p>
-                                <div class="flex items-center space-x-4 mt-2">
-                                    <span class="text-sm text-gray-500"><i class="fas fa-map-marker-alt mr-2"></i>Bangalore</span>
-                                    <span class="text-sm text-gray-500"><i class="fas fa-clock mr-2"></i>Applied 2 days ago</span>
-                                </div>
+                        <div>
+                            <h3 class="text-lg font-semibold">{{ application.job.title }}</h3>
+                            <p class="text-gray-600">{{ application.job.company }}</p>
+                            <div class="flex items-center space-x-4 mt-2">
+                                <span class="text-sm text-gray-500"><i class="fas fa-map-marker-alt mr-2"></i>{{ application.job.location }}</span>
+                                <span class="text-sm text-gray-500"><i class="fas fa-clock mr-2"></i>Applied {{ application.applied_at|timesince }} ago</span>
                             </div>
                         </div>
                         <div class="flex flex-col items-end">
-                            <span class="status-badge bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">In Progress</span>
-                            <button class="mt-4 text-indigo-600 hover:text-indigo-700">View Details →</button>
+                            {% if application.status == 'approved' %}
+                                <span class="status-badge bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Shortlisted</span>
+                            {% elif application.status == 'rejected' %}
+                                <span class="status-badge bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm">Rejected</span>
+                            {% else %}
+                                <span class="status-badge bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">Applied</span>
+                            {% endif %}
+                            <a href="{% url 'application_detail' application.id %}" class="mt-4 text-indigo-600 hover:text-indigo-700">View Details →</a>
                         </div>
                     </div>
                     <div class="mt-4 pt-4 border-t">
                         <div class="flex justify-between items-center">
                             <div class="flex space-x-4">
-                                <span class="text-sm text-gray-500">Resume: resume_v2.pdf</span>
-                                <span class="text-sm text-gray-500">Cover Letter: Included</span>
-                            </div>
-                            <div class="flex space-x-2">
-                                <button class="text-gray-600 hover:text-indigo-600"><i class="fas fa-edit"></i></button>
-                                <button class="text-gray-600 hover:text-red-600"><i class="fas fa-trash"></i></button>
+                                <span class="text-sm text-gray-500">Skills: {{ application.job.skills }}</span>
+                                <span class="text-sm text-gray-500">Salary: {{ application.job.salary }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Application 2 -->
-                <div class="application-card bg-white p-6 rounded-lg shadow-md">
-                    <div class="flex justify-between items-start">
-                        <div class="flex items-start space-x-4">
-                            <img src="https://via.placeholder.com/48" alt="Microsoft" class="rounded">
-                            <div>
-                                <h3 class="text-lg font-semibold">Data Scientist</h3>
-                                <p class="text-gray-600">Microsoft</p>
-                                <div class="flex items-center space-x-4 mt-2">
-                                    <span class="text-sm text-gray-500"><i class="fas fa-map-marker-alt mr-2"></i>Hyderabad</span>
-                                    <span class="text-sm text-gray-500"><i class="fas fa-clock mr-2"></i>Applied 5 days ago</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex flex-col items-end">
-                            <span class="status-badge bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Shortlisted</span>
-                            <button class="mt-4 text-indigo-600 hover:text-indigo-700">View Details →</button>
-                        </div>
-                    </div>
-                    <div class="mt-4 pt-4 border-t">
-                        <div class="flex justify-between items-center">
-                            <div class="flex space-x-4">
-                                <span class="text-sm text-gray-500">Resume: resume_v2.pdf</span>
-                                <span class="text-sm text-gray-500">Cover Letter: Included</span>
-                            </div>
-                            <div class="flex space-x-2">
-                                <button class="text-gray-600 hover:text-indigo-600"><i class="fas fa-edit"></i></button>
-                                <button class="text-gray-600 hover:text-red-600"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Application 3 -->
-                <div class="application-card bg-white p-6 rounded-lg shadow-md">
-                    <div class="flex justify-between items-start">
-                        <div class="flex items-start space-x-4">
-                            <img src="https://via.placeholder.com/48" alt="Amazon" class="rounded">
-                            <div>
-                                <h3 class="text-lg font-semibold">Product Manager</h3>
-                                <p class="text-gray-600">Amazon</p>
-                                <div class="flex items-center space-x-4 mt-2">
-                                    <span class="text-sm text-gray-500"><i class="fas fa-map-marker-alt mr-2"></i>Remote</span>
-                                    <span class="text-sm text-gray-500"><i class="fas fa-clock mr-2"></i>Applied 1 week ago</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex flex-col items-end">
-                            <span class="status-badge bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm">Rejected</span>
-                            <button class="mt-4 text-indigo-600 hover:text-indigo-700">View Details →</button>
-                        </div>
-                    </div>
-                    <div class="mt-4 pt-4 border-t">
-                        <div class="flex justify-between items-center">
-                            <div class="flex space-x-4">
-                                <span class="text-sm text-gray-500">Resume: resume_v1.pdf</span>
-                                <span class="text-sm text-gray-500">Cover Letter: Not Included</span>
-                            </div>
-                            <div class="flex space-x-2">
-                                <button class="text-gray-600 hover:text-indigo-600"><i class="fas fa-edit"></i></button>
-                                <button class="text-gray-600 hover:text-red-600"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {% empty %}
+                <p class="text-gray-600">You have not applied to any jobs yet.</p>
+                {% endfor %}
             </div>
 
             <!-- Pagination -->

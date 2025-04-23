@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -121,7 +122,25 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Media files
+MEDIA_URL = '/resumes/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'resumes')
+
+# CSRF trusted origins for local development and browser preview
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:8000",
+    "http://127.0.0.1:59169",
+    "http://localhost:8000",
+    "http://localhost:59169",
+]
+
+# Google Calendar API Service Account
+GOOGLE_SERVICE_ACCOUNT_EMAIL = 'calendar-scheduler@placement.iam.gserviceaccount.com'
+GOOGLE_SERVICE_ACCOUNT_KEY = 'bdb865f3c289044322f4154f7db6b6e32fdb93d5'  # Not used directly, keep your JSON file secure
+GOOGLE_SERVICE_ACCOUNT_FILE = BASE_DIR / 'credentials.json'  # Place your downloaded JSON here
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+LOGIN_URL = '/login/'

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Shortlisting - PlacementCell</title>
+    <title>AI Shortlisting - PlaceMentor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -35,6 +35,17 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        .default-avatar {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 9999px;
+            background: #eee;
+            text-align: center;
+            line-height: 40px;
+            font-size: 20px;
+            color: #888;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -42,13 +53,15 @@
         <!-- Sidebar (same as dashboard) -->
         <div class="sidebar w-64 fixed">
             <div class="p-4">
-                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlacementCell</h2></a>
+                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlaceMentor</h2></a>
                 <div class="mt-8">
                     <div class="flex items-center space-x-3 mb-4">
-                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-full">
+                        <span class="inline-block w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fas fa-user"></i>
+                        </span>
                         <div>
-                            <p class="font-semibold">Sarah Johnson</p>
-                            <p class="text-sm text-gray-400">Microsoft HR</p>
+                            <p class="font-semibold">{{ user.full_name|default:user.email|default:"Recruiter" }}</p>
+                            <p class="text-sm text-gray-400">{{ user.company_name|default:"Company" }}</p>
                         </div>
                     </div>
                     <nav class="mt-8">
@@ -80,6 +93,10 @@
                             <i class="fas fa-cog"></i>
                             <span>Settings</span>
                         </a>
+                        <a href="{% url 'logout' %}" class="flex items-center space-x-3 text-red-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
                     </nav>
                 </div>
             </div>
@@ -91,15 +108,60 @@
             <div class="flex justify-between items-center mb-8">
                 <h1 class="text-2xl font-bold">AI Shortlisting</h1>
                 <div class="flex items-center space-x-4">
-                    <button class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition duration-300 flex items-center space-x-2">
-                        <i class="fas fa-cog"></i>
-                        <span>Configure AI</span>
+                    <button id="run-ai-shortlisting" class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition duration-300 flex items-center space-x-2">
+                        <i class="fas fa-robot"></i>
+                        <span>Run AI Shortlisting</span>
                     </button>
                     <div class="relative">
                         <i class="fas fa-bell text-gray-600 text-xl"></i>
                         <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
                     </div>
                 </div>
+            </div>
+            <!-- AI Shortlisting Configuration Modal -->
+            <div id="ai-shortlisting-config-modal" class="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center hidden">
+                <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative animate-fade-in">
+                    <button id="close-config-modal" class="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-xl">&times;</button>
+                    <h2 class="text-xl font-semibold mb-4">AI Shortlisting Configuration</h2>
+                    <form id="ai-shortlisting-config-form" class="space-y-4">
+                        <div>
+                            <label for="job-position" class="block font-medium mb-1">Select Position</label>
+                            <select id="job-position" name="job_position" class="w-full border rounded px-3 py-2" required>
+                                <option value="" disabled selected>Select a job</option>
+                                {% for job in jobs %}
+                                    <option value="{{ job.id }}">{{ job.title }} at {{ job.company }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-medium mb-1">Assessment Parameters</label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2" id="assessment-params-list">
+                                <label><input type="checkbox" name="params" value="Skills Assessment" checked> Skills Assessment</label>
+                                <label><input type="checkbox" name="params" value="Technical Skills Match" checked> Technical Skills Match</label>
+                                <label><input type="checkbox" name="params" value="Experience Level Analysis" checked> Experience Level Analysis</label>
+                                <label><input type="checkbox" name="params" value="Education Background Check" checked> Education Background Check</label>
+                                <label><input type="checkbox" name="params" value="Behavioral Analysis"> Behavioral Analysis</label>
+                                <label><input type="checkbox" name="params" value="Communication Skills"> Communication Skills</label>
+                                <label><input type="checkbox" name="params" value="Leadership Potential"> Leadership Potential</label>
+                                <label><input type="checkbox" name="params" value="Cultural Fit Assessment"> Cultural Fit Assessment</label>
+                                <!-- More assessment parameters can be added here dynamically -->
+                            </div>
+                        </div>
+                        <div>
+                            <label for="num-shortlist" class="block font-medium mb-1">Number of Applicants to Shortlist</label>
+                            <input type="number" id="num-shortlist" name="num_shortlist" class="w-full border rounded px-3 py-2" min="1" value="3" required>
+                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition">Start Shortlisting</button>
+                    </form>
+                </div>
+            </div>
+            <!-- AI Shortlisting Results Table: moved just below header -->
+            <div id="ai-shortlisting-results" class="bg-white p-6 rounded-lg shadow-md animate-fade-in mb-8 hidden">
+                <h2 class="text-xl font-semibold mb-4">Shortlisting Results</h2>
+                <div id="ai-loading" class="mb-4 hidden">
+                    <span class="animate-pulse text-indigo-600">Running AI Shortlisting, please wait...</span>
+                </div>
+                <div id="ai-results-table-container"></div>
             </div>
 
             <!-- AI Stats -->
@@ -253,9 +315,150 @@
     <script>
         // Animation for progress rings
         document.querySelectorAll('.progress-ring').forEach(ring => {
-            const radius = ring.r.baseVal.value;
-            const circumference = radius * 2 * Math.PI;
-            ring.style.strokeDasharray = `${circumference} ${circumference}`;
+            ring.style.strokeDasharray = ring.getTotalLength();
+        });
+
+        // Ensure DOM is ready before running modal logic
+        document.addEventListener('DOMContentLoaded', function() {
+            // Modal logic
+            const configModal = document.getElementById('ai-shortlisting-config-modal');
+            const runBtn = document.getElementById('run-ai-shortlisting');
+            const closeConfigModal = document.getElementById('close-config-modal');
+            const configForm = document.getElementById('ai-shortlisting-config-form');
+            const jobPositionSelect = document.getElementById('job-position');
+            const aiShortlistingResults = document.getElementById('ai-shortlisting-results');
+            const loadingDiv = document.getElementById('ai-loading');
+            const resultsTableContainer = document.getElementById('ai-results-table-container');
+
+            // Open modal on button click
+            runBtn.addEventListener('click', function() {
+                configModal.classList.remove('hidden');
+                // Fetch job positions from backend
+                fetch('/core/api/job_positions/')
+                    .then(resp => resp.json())
+                    .then(data => {
+                        jobPositionSelect.innerHTML = '';
+                        data.positions.forEach(pos => {
+                            const opt = document.createElement('option');
+                            opt.value = pos.id;
+                            opt.textContent = `${pos.title} at ${pos.company}`;
+                            jobPositionSelect.appendChild(opt);
+                        });
+                    });
+            });
+            // Close modal
+            closeConfigModal.addEventListener('click', function() {
+                configModal.classList.add('hidden');
+            });
+            // Submit config form
+            configForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                configModal.classList.add('hidden');
+                aiShortlistingResults.classList.remove('hidden');
+                loadingDiv.classList.remove('hidden');
+                resultsTableContainer.innerHTML = '';
+                // Instead of sending just ticked parameter values, send an object with parameter name and checked boolean
+                const paramCheckboxes = configForm.querySelectorAll('input[name="params"]');
+                const params = Array.from(paramCheckboxes).map(cb => ({
+                    name: cb.value,
+                    checked: cb.checked
+                }));
+                const jobId = jobPositionSelect.value;
+                // Robustly get num_shortlist value, fallback to 3 if not found or invalid
+                let numShortlist = 3;
+                const numShortlistInput = configForm.querySelector('input[name="num_shortlist"]');
+                if (numShortlistInput && numShortlistInput.value && !isNaN(parseInt(numShortlistInput.value))) {
+                    numShortlist = parseInt(numShortlistInput.value);
+                }
+                // Robustly get CSRF token
+                let csrfToken = '';
+                const csrfElem = document.querySelector('[name=csrfmiddlewaretoken]');
+                if (csrfElem) {
+                    csrfToken = csrfElem.value;
+                } else {
+                    // Try to get from cookies as fallback
+                    const match = document.cookie.match(/csrftoken=([^;]+)/);
+                    if (match) csrfToken = match[1];
+                }
+                fetch('/core/ai_shortlist/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({
+                        job_id: jobId,
+                        params: params,
+                        num_shortlist: numShortlist
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    loadingDiv.classList.add('hidden');
+                    if (data.results && data.results.length > 0) {
+                        let tableHtml = `
+                        <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Applicant</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">AI Assessment & Recommendation</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                        `;
+                        data.results.forEach((res, idx) => {
+                            // Show only first 5 bullet points by default (or first 5 lines)
+                            const llmLines = res.llm_result.split(/\n|<br\s*\/?/);
+                            let preview = llmLines.filter(line => line.trim().startsWith('-')).slice(0, 5).join('<br>');
+                            if (!preview) preview = llmLines.slice(0, 5).join('<br>');
+                            // Always show score and recommendation/justification
+                            const scoreLine = llmLines.find(line => line.includes('Overall Score')) || '';
+                            const recLine = llmLines.find(line => line.includes('Overall Recommendation')) || '';
+                            const justLine = llmLines.find(line => line.toLowerCase().includes('justification')) || '';
+                            tableHtml += `
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">${idx+1}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${res.applicant_name}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${res.email}</td>
+                                    <td class="px-6 py-4 whitespace-pre-line text-sm text-gray-700">
+                                        <span class="ai-preview">${preview}<br>${scoreLine}<br>${recLine}<br>${justLine}</span>
+                                        <button class="read-more-btn text-indigo-600 underline ml-2" data-idx="${idx}">Read more</button>
+                                        <span class="ai-full hidden">${res.llm_result.replace(/\n/g, '<br>')}</span>
+                                        <button class="review-application-btn bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded ml-4" data-app-id="${res.application_id}">Review Application</button>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                        tableHtml += '</tbody></table></div>';
+                        resultsTableContainer.innerHTML = tableHtml;
+                        // Add read more logic
+                        resultsTableContainer.querySelectorAll('.read-more-btn').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                const td = btn.closest('td');
+                                td.querySelector('.ai-preview').classList.add('hidden');
+                                td.querySelector('.ai-full').classList.remove('hidden');
+                                btn.classList.add('hidden');
+                            });
+                        });
+                        // Add review button logic
+                        resultsTableContainer.querySelectorAll('.review-application-btn').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                const appId = btn.getAttribute('data-app-id');
+                                window.location.href = `/applications/?application_id=${appId}`;
+                            });
+                        });
+                    } else {
+                        resultsTableContainer.innerHTML = '<span class="text-gray-500">No applications found or AI results available.</span>';
+                    }
+                })
+                .catch(err => {
+                    loadingDiv.classList.add('hidden');
+                    resultsTableContainer.innerHTML = '<span class="text-red-500">Error running AI shortlisting. Please try again.</span>';
+                });
+            });
         });
     </script>
 </body>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interviews - PlacementCell</title>
+    <title>Interviews - PlaceMentor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -37,14 +37,15 @@
         <!-- Sidebar -->
         <div class="sidebar w-64 fixed">
             <div class="p-4">
-                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlacementCell</h2></a>
+                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlaceMentor</h2></a>
                 <div class="mt-8">
                     <div class="flex items-center space-x-3 mb-4">
-                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-full">
+                        <span class="inline-block w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fas fa-user"></i>
+                        </span>
                         <div>
-                            <p class="font-semibold">Rohan Darokar</p>
-                            <p class="text-sm text-gray-400">Computer Science</p>
-                        </div>
+                            <p class="font-semibold">{{ user.full_name|default:user.email|default:"User" }}</p>
+                            <p class="text-sm text-gray-400">{{ department|default:"Department" }}</p>                        </div>
                     </div>
                     <nav class="mt-8">
                         <a href="{% url 'student_dashboard' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
@@ -75,6 +76,10 @@
                             <i class="fas fa-cog"></i>
                             <span>Settings</span>
                         </a>
+                        <a href="{% url 'logout' %}" class="flex items-center space-x-3 text-red-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
                     </nav>
                 </div>
             </div>
@@ -100,38 +105,43 @@
             </div>
 
             <!-- Next Interview -->
+            {% if next_interview %}
             <div class="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white p-6 rounded-lg shadow-lg mb-8">
                 <div class="flex justify-between items-start">
                     <div>
                         <h2 class="text-xl font-semibold mb-2">Next Interview</h2>
                         <div class="flex items-center space-x-4 mb-4">
-                            <img src="https://via.placeholder.com/48" alt="Google" class="rounded">
                             <div>
-                                <h3 class="font-semibold">Software Engineer - Google</h3>
-                                <p class="text-indigo-200">Technical Round</p>
+                                <h3 class="font-semibold">{{ next_interview.application.job.company }}</h3>
+                                <p class="text-indigo-200">{{ next_interview.application.job.title }}</p>
                             </div>
                         </div>
                         <div class="flex items-center space-x-6">
                             <div class="flex items-center">
                                 <i class="fas fa-clock mr-2"></i>
-                                <span>10:00 AM - 11:30 AM</span>
+                                <span>{{ next_interview.scheduled_time|date:'H:i A' }}</span>
                             </div>
+                            {% if next_interview.gmeet_link %}
                             <div class="flex items-center">
                                 <i class="fas fa-video mr-2"></i>
                                 <span>Google Meet</span>
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="text-center">
                         <div class="countdown bg-white text-indigo-600 px-4 py-2 rounded-lg font-bold text-xl mb-2">
-                            02:45:30
+                            {{ next_interview.scheduled_time|date:'Y-m-d H:i' }}
                         </div>
-                        <button class="bg-white text-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-50 transition">
-                            Join Now
-                        </button>
+                        {% if next_interview.gmeet_link %}
+                        <div class="mt-4">
+                            <a href="{{ next_interview.gmeet_link }}" target="_blank" class="bg-white text-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-50 transition">Join Now</a>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
+            {% endif %}
 
             <!-- Interview Schedule -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -139,43 +149,32 @@
                 <div>
                     <h2 class="text-lg font-semibold mb-4">Today's Interviews</h2>
                     <div class="space-y-4">
+                        {% for iv in todays_interviews %}
                         <div class="interview-card bg-white p-4 rounded-lg shadow-md">
                             <div class="flex justify-between items-start">
                                 <div class="flex items-start space-x-4">
-                                    <img src="https://via.placeholder.com/40" alt="Google" class="rounded">
+                                    <img src="https://via.placeholder.com/40" alt="{{ iv.application.job.company }}" class="rounded">
                                     <div>
-                                        <h3 class="font-semibold">Google</h3>
-                                        <p class="text-sm text-gray-600">Technical Round</p>
+                                        <h3 class="font-semibold">{{ iv.application.job.company }}</h3>
+                                        <p class="text-sm text-gray-600">{{ iv.application.job.title }}</p>
                                         <div class="flex items-center mt-2 text-sm text-gray-500">
                                             <i class="fas fa-clock mr-2"></i>
-                                            <span>10:00 AM</span>
+                                            <span>{{ iv.scheduled_time|date:'H:i A' }}</span>
                                         </div>
                                     </div>
                                 </div>
-                                <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
-                                    Prepare
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="interview-card bg-white p-4 rounded-lg shadow-md">
-                            <div class="flex justify-between items-start">
-                                <div class="flex items-start space-x-4">
-                                    <img src="https://via.placeholder.com/40" alt="Microsoft" class="rounded">
-                                    <div>
-                                        <h3 class="font-semibold">Microsoft</h3>
-                                        <p class="text-sm text-gray-600">HR Round</p>
-                                        <div class="flex items-center mt-2 text-sm text-gray-500">
-                                            <i class="fas fa-clock mr-2"></i>
-                                            <span>2:00 PM</span>
-                                        </div>
-                                    </div>
+                                {% if iv.gmeet_link %}
+                                <div class="flex items-center space-x-2 mt-2">
+                                    <a href="{{ iv.gmeet_link }}" target="_blank" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 flex items-center">
+                                        <i class="fas fa-video mr-2"></i> Join Google Meet
+                                    </a>
                                 </div>
-                                <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
-                                    Prepare
-                                </button>
+                                {% endif %}
                             </div>
                         </div>
+                        {% empty %}
+                        <p class="text-gray-500">No interviews scheduled for today.</p>
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -183,43 +182,32 @@
                 <div>
                     <h2 class="text-lg font-semibold mb-4">Upcoming Interviews</h2>
                     <div class="space-y-4">
+                        {% for iv in upcoming_interviews %}
                         <div class="interview-card bg-white p-4 rounded-lg shadow-md">
                             <div class="flex justify-between items-start">
                                 <div class="flex items-start space-x-4">
-                                    <img src="https://via.placeholder.com/40" alt="Amazon" class="rounded">
+                                    <img src="https://via.placeholder.com/40" alt="{{ iv.application.job.company }}" class="rounded">
                                     <div>
-                                        <h3 class="font-semibold">Amazon</h3>
-                                        <p class="text-sm text-gray-600">System Design Round</p>
+                                        <h3 class="font-semibold">{{ iv.application.job.company }}</h3>
+                                        <p class="text-sm text-gray-600">{{ iv.application.job.title }}</p>
                                         <div class="flex items-center mt-2 text-sm text-gray-500">
                                             <i class="fas fa-calendar mr-2"></i>
-                                            <span>Tomorrow, 11:00 AM</span>
+                                            <span>{{ iv.scheduled_time|date:'M d, H:i A' }}</span>
                                         </div>
                                     </div>
                                 </div>
-                                <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
-                                    Prepare
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="interview-card bg-white p-4 rounded-lg shadow-md">
-                            <div class="flex justify-between items-start">
-                                <div class="flex items-start space-x-4">
-                                    <img src="https://via.placeholder.com/40" alt="Meta" class="rounded">
-                                    <div>
-                                        <h3 class="font-semibold">Meta</h3>
-                                        <p class="text-sm text-gray-600">Coding Round</p>
-                                        <div class="flex items-center mt-2 text-sm text-gray-500">
-                                            <i class="fas fa-calendar mr-2"></i>
-                                            <span>Apr 22, 3:00 PM</span>
-                                        </div>
-                                    </div>
+                                {% if iv.gmeet_link %}
+                                <div class="flex items-center space-x-2 mt-2">
+                                    <a href="{{ iv.gmeet_link }}" target="_blank" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 flex items-center">
+                                        <i class="fas fa-video mr-2"></i> Join Google Meet
+                                    </a>
                                 </div>
-                                <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
-                                    Prepare
-                                </button>
+                                {% endif %}
                             </div>
                         </div>
+                        {% empty %}
+                        <p class="text-gray-500">No upcoming interviews scheduled.</p>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -233,51 +221,38 @@
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Company</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Position</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                                 <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Action</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
+                            {% for iv in history_interviews %}
                             <tr>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center">
-                                        <img src="https://via.placeholder.com/32" alt="Netflix" class="rounded mr-2">
-                                        <span class="text-sm font-medium">Netflix</span>
+                                        <img src="https://via.placeholder.com/32" alt="{{ iv.application.job.company }}" class="rounded mr-2">
+                                        <span class="text-sm font-medium">{{ iv.application.job.company }}</span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-500">Senior Developer</td>
-                                <td class="px-6 py-4 text-sm text-gray-500">Technical</td>
-                                <td class="px-6 py-4 text-sm text-gray-500">Apr 15, 2025</td>
+                                <td class="px-6 py-4 text-sm text-gray-500">{{ iv.application.job.title }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-500">{{ iv.scheduled_time|date:'M d, Y H:i A' }}</td>
                                 <td class="px-6 py-4">
-                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                                        Completed
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full {% if iv.status == 'completed' %}bg-green-100 text-green-800{% elif iv.status == 'cancelled' %}bg-red-100 text-red-800{% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                                        {{ iv.get_status_display }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-right">
-                                    <button class="text-indigo-600 hover:text-indigo-900">View Feedback</button>
+                                    {% if iv.gmeet_link %}
+                                    <a href="{{ iv.gmeet_link }}" target="_blank" class="text-indigo-600 hover:text-indigo-900">View Meeting</a>
+                                    {% else %}
+                                    <span class="text-gray-400">No Link</span>
+                                    {% endif %}
                                 </td>
                             </tr>
-                            <tr>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center">
-                                        <img src="https://via.placeholder.com/32" alt="Adobe" class="rounded mr-2">
-                                        <span class="text-sm font-medium">Adobe</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-500">Full Stack Developer</td>
-                                <td class="px-6 py-4 text-sm text-gray-500">HR</td>
-                                <td class="px-6 py-4 text-sm text-gray-500">Apr 12, 2025</td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                        Pending
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button class="text-indigo-600 hover:text-indigo-900">View Details</button>
-                                </td>
-                            </tr>
+                            {% empty %}
+                            <tr><td colspan="5" class="text-center text-gray-500">No past interviews.</td></tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>

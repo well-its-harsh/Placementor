@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics - PlacementCell</title>
+    <title>Analytics - PlaceMentor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -37,13 +37,15 @@
         <!-- Sidebar (same as dashboard) -->
         <div class="sidebar w-64 fixed">
             <div class="p-4">
-                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlacementCell</h2></a>
+                <a href="{% url 'home' %}" class="block w-fit cursor-pointer"><h2 class="text-2xl font-bold text-white">PlaceMentor</h2></a>
                 <div class="mt-8">
                     <div class="flex items-center space-x-3 mb-4">
-                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-full">
+                        <span class="inline-block w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fas fa-user"></i>
+                        </span>
                         <div>
-                            <p class="font-semibold">Sarah Johnson</p>
-                            <p class="text-sm text-gray-400">Microsoft HR</p>
+                            <p class="font-semibold">{{ user.full_name|default:user.email|default:"Recruiter" }}</p>
+                            <p class="text-sm text-gray-400">{{ user.company_name|default:"Company" }}</p>
                         </div>
                     </div>
                     <nav class="mt-8">
@@ -74,6 +76,10 @@
                         <a href="{% url 'Rsettings' %}" class="flex items-center space-x-3 text-gray-400 hover:text-white p-3 rounded-lg mb-2">
                             <i class="fas fa-cog"></i>
                             <span>Settings</span>
+                        </a>
+                        <a href="{% url 'logout' %}" class="flex items-center space-x-3 text-red-400 hover:text-white p-3 rounded-lg mb-2">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
                         </a>
                     </nav>
                 </div>
