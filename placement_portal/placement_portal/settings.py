@@ -78,8 +78,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'placement_cell',  # Database name
-        'USER': 'django_user',     # MySQL username
-        'PASSWORD': 'your_password',  # Password you set for django_user
+        'USER': 'root',     # MySQL username
+        'PASSWORD': 'Harsh7503ji@',  # Password you set for django_user
         'HOST': 'localhost',       # MySQL host, use 'localhost' if local
         'PORT': '3306',            # Default MySQL port
     }
