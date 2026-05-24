@@ -338,7 +338,7 @@ def ats_score(request):
                     resume_text = f"[Resume extraction error: {str(e)}]"
                     ats_error = resume_text
             if resume_text and not ats_error:
-                genai.configure(api_key="AIzaSyC1FAYZtH-5vcaBGBI-qHmiTMNjRa_RuGs")
+                genai.configure(api_key=settings.GEMINI_API_KEY)
                 prompt = f'''
 You are an advanced ATS (Applicant Tracking System) and resume analysis AI. Analyze the following resume text and provide a detailed ATS report with the following:
 1. ATS Score (0-100): A number representing how well this resume would pass an ATS.
@@ -743,7 +743,7 @@ def ai_shortlisting_api(request):
     Now expects params as an array of objects: [{name: ..., checked: ...}, ...]
     """
     import json
-    genai.configure(api_key="AIzaSyC1FAYZtH-5vcaBGBI-qHmiTMNjRa_RuGs")
+    genai.configure(api_key=settings.GEMINI_API_KEY)
     # Custom recruiter session check
     recruiter_id = request.session.get('recruiter_id')
     if not recruiter_id:

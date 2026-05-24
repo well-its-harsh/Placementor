@@ -12,16 +12,20 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from .env file
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&g61w#so70+_$wqv@gd49$eg7)wjjt4bkgaa)l^ph^6@0*ge5n'
+SECRET_KEY = os.getenv('SECRET_KEY', 'fallback-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -77,11 +81,11 @@ WSGI_APPLICATION = 'placement_portal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'placement_cell',  # Database name
-        'USER': 'root',     # MySQL username
-        'PASSWORD': 'Harsh7503ji@',  # Password you set for django_user
-        'HOST': 'localhost',       # MySQL host, use 'localhost' if local
-        'PORT': '3306',            # Default MySQL port
+        'NAME': os.getenv('DB_NAME', 'placement_cell'),
+        'USER': os.getenv('DB_USER', 'root'),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '3306'),
     }
 }
 
@@ -136,8 +140,11 @@ CSRF_TRUSTED_ORIGINS = [
 
 # Google Calendar API Service Account
 GOOGLE_SERVICE_ACCOUNT_EMAIL = 'calendar-scheduler@placement.iam.gserviceaccount.com'
-GOOGLE_SERVICE_ACCOUNT_KEY = 'bdb865f3c289044322f4154f7db6b6e32fdb93d5'  # Not used directly, keep your JSON file secure
+GOOGLE_SERVICE_ACCOUNT_KEY = os.getenv('GOOGLE_SERVICE_ACCOUNT_KEY', '')
 GOOGLE_SERVICE_ACCOUNT_FILE = BASE_DIR / 'credentials.json'  # Place your downloaded JSON here
+
+# Gemini API Key
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
